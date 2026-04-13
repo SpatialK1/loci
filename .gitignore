@@ -1,0 +1,11 @@
+# Environment / credentials
+config.php
+
+# macOS noise
+.DS_Store
+
+# Editor
+.cursor/
+
+# Project brief
+Pocket2_ProjectBrief.rtf
