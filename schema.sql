@@ -1,9 +1,9 @@
-CREATE TABLE recommenders (
+CREATE TABLE IF NOT EXISTS recommenders (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE media (
+CREATE TABLE IF NOT EXISTS media (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     type ENUM('url', 'book', 'movie', 'podcast') NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -23,12 +23,12 @@ CREATE TABLE media (
     FOREIGN KEY (recommender_id) REFERENCES recommenders(id) ON DELETE SET NULL
 );
 
-CREATE TABLE tags (
+CREATE TABLE IF NOT EXISTS tags (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE media_tags (
+CREATE TABLE IF NOT EXISTS media_tags (
     media_id INT UNSIGNED NOT NULL,
     tag_id INT UNSIGNED NOT NULL,
     PRIMARY KEY (media_id, tag_id),
@@ -36,7 +36,7 @@ CREATE TABLE media_tags (
     FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
 
-CREATE TABLE lists (
+CREATE TABLE IF NOT EXISTS lists (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -45,7 +45,7 @@ CREATE TABLE lists (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE media_lists (
+CREATE TABLE IF NOT EXISTS media_lists (
     media_id INT UNSIGNED NOT NULL,
     list_id INT UNSIGNED NOT NULL,
     PRIMARY KEY (media_id, list_id),
