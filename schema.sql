@@ -35,3 +35,20 @@ CREATE TABLE media_tags (
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
+
+CREATE TABLE lists (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    share_token VARCHAR(64) NOT NULL UNIQUE,
+    is_public TINYINT(1) NOT NULL DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE media_lists (
+    media_id INT UNSIGNED NOT NULL,
+    list_id INT UNSIGNED NOT NULL,
+    PRIMARY KEY (media_id, list_id),
+    FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE,
+    FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
+);
