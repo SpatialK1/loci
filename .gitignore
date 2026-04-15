@@ -1,5 +1,6 @@
 # Environment / credentials
 config.php
+api/auth.php
 
 # macOS noise
 .DS_Store
