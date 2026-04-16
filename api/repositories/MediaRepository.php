@@ -61,7 +61,7 @@ class MediaRepository {
                   WHERE $whereClause
                   ORDER BY m.created_at DESC";
 
-        $rows = DB::query(array_merge([$query], $params));
+        $rows = DB::query($query, ...$params);
 
         foreach ($rows as &$row) {
             $row['tags'] = $this->getTagsForMedia($row['id']);
