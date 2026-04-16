@@ -1,5 +1,4 @@
-Here's the content for api/repositories/ListRepository.php:
-php<?php
+<?php
 class ListRepository {
 
     public function create(array $data): array {
