@@ -10,3 +10,7 @@ api/auth.php
 
 # Project brief
 Pocket2_ProjectBrief.rtf
+
+# Dependencies
+vendor/
+composer.lock
