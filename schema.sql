@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS media (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     type ENUM('url', 'book', 'movie', 'podcast') NOT NULL,
     title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NULL,
     url TEXT,
     notes TEXT,
     recommender_id INT UNSIGNED,

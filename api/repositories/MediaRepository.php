@@ -5,6 +5,7 @@ class MediaRepository {
         DB::insert('media', [
             'type'           => $data['type'],
             'title'          => $data['title'],
+            'author'         => $data['author'] ?? null,
             'url'            => $data['url'] ?? null,
             'notes'          => $data['notes'] ?? null,
             'recommender_id' => $data['recommender_id'] ?? null,
