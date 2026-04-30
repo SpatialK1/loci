@@ -1,5 +1,4 @@
-Here's the complete public/index.php:
-php<?php
+<?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../api/auth.php';
 require_once __DIR__ . '/../api/db.php';
