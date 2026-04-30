@@ -36,6 +36,43 @@ class MediaRepository {
         return $row;
     }
 
+    public function update(int $id, array $data): ?array {
+        $allowed = [
+            'title', 'author', 'url', 'notes', 'recommender_id',
+            'status', 'consumed_at', 'is_dead', 'is_paywalled',
+            'isbn', 'book_format', 'show_name'
+        ];
+    
+        $update = [];
+        foreach ($allowed as $field) {
+            if (array_key_exists($field, $data)) {
+                $update[$field] = $data[$field];
+            }
+        }
+    
+        if (empty($update)) return $this->findById($id);
+    
+        DB::update('media', $update, 'id = %i', $id);
+    
+        if (array_key_exists('tags', $data)) {
+            $tags = new TagRepository();
+            $tags->syncTagsForMedia($id, $data['tags']);
+        }
+    
+        if (array_key_exists('recommender', $data)) {
+            $recommenders = new RecommenderRepository();
+            $recommender_id = $recommenders->findOrCreate($data['recommender']);
+            DB::update('media', ['recommender_id' => $recommender_id], 'id = %i', $id);
+        }
+    
+        return $this->findById($id);
+    }
+    
+    public function delete(int $id): bool {
+        DB::query("DELETE FROM media WHERE id = %i", $id);
+        return DB::affectedRows() > 0;
+    }
+
     public function getAll(array $filters = []): array {
         $where = ["1=1"];
         $params = [];

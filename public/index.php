@@ -1,4 +1,5 @@
-<?php
+Here's the complete public/index.php:
+php<?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../api/auth.php';
 require_once __DIR__ . '/../api/db.php';
@@ -9,23 +10,26 @@ require_once __DIR__ . '/../api/repositories/ListRepository.php';
 
 header('Content-Type: application/json');
 
-$media       = new MediaRepository();
-$tags        = new TagRepository();
-$recommenders = new RecommenderRepository();
-$lists       = new ListRepository();
-
-// Get the request path and method
 $path   = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Require auth for all requests
 require_auth();
 
-// Route requests
-switch ($path) {
+$segments = explode('/', $path);
+$resource = $segments[0] ?? '';
+$id       = isset($segments[1]) ? (int)$segments[1] : null;
+
+$media        = new MediaRepository();
+$tags         = new TagRepository();
+$recommenders = new RecommenderRepository();
+$lists        = new ListRepository();
+
+switch ($resource) {
 
     case 'media':
-        if ($method === 'GET') {
+        if ($method === 'GET' && $id) {
+            echo json_encode($media->findById($id));
+        } elseif ($method === 'GET') {
             echo json_encode($media->getAll($_GET));
         } elseif ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -38,6 +42,11 @@ switch ($path) {
                 $item = $media->findById($item['id']);
             }
             echo json_encode($item);
+        } elseif ($method === 'PUT' && $id) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($media->update($id, $data));
+        } elseif ($method === 'DELETE' && $id) {
+            echo json_encode(['success' => $media->delete($id)]);
         }
         break;
 
@@ -54,11 +63,18 @@ switch ($path) {
         break;
 
     case 'lists':
-        if ($method === 'GET') {
+        if ($method === 'GET' && $id) {
+            echo json_encode($lists->findById($id));
+        } elseif ($method === 'GET') {
             echo json_encode($lists->getAll());
         } elseif ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($lists->create($data));
+        } elseif ($method === 'PUT' && $id) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($lists->update($id, $data));
+        } elseif ($method === 'DELETE' && $id) {
+            echo json_encode(['success' => $lists->delete($id)]);
         }
         break;
 

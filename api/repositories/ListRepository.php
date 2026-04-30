@@ -49,6 +49,28 @@ class ListRepository {
         return $lists;
     }
 
+    public function update(int $id, array $data): ?array {
+        $allowed = ['name', 'description', 'is_public'];
+    
+        $update = [];
+        foreach ($allowed as $field) {
+            if (array_key_exists($field, $data)) {
+                $update[$field] = $data[$field];
+            }
+        }
+    
+        if (!empty($update)) {
+            DB::update('lists', $update, 'id = %i', $id);
+        }
+    
+        return $this->findById($id);
+    }
+    
+    public function delete(int $id): bool {
+        DB::query("DELETE FROM lists WHERE id = %i", $id);
+        return DB::affectedRows() > 0;
+    }
+
     public function addMedia(int $listId, int $mediaId): void {
         DB::query(
             "INSERT IGNORE INTO media_lists (list_id, media_id) VALUES (%i, %i)",
