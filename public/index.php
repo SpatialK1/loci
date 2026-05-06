@@ -15,9 +15,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 require_auth();
 
-$segments = explode('/', $path);
-$resource = $segments[0] ?? '';
-$id       = isset($segments[1]) ? (int)$segments[1] : null;
+$segments    = explode('/', $path);
+$resource    = $segments[0] ?? '';
+$id          = isset($segments[1]) ? (int)$segments[1] : null;
+$subresource = $segments[2] ?? null;
+$subid       = isset($segments[3]) ? (int)$segments[3] : null;
 
 $media        = new MediaRepository();
 $tags         = new TagRepository();
@@ -67,12 +69,19 @@ switch ($resource) {
             echo json_encode($lists->findById($id));
         } elseif ($method === 'GET') {
             echo json_encode($lists->getAll());
-        } elseif ($method === 'POST') {
+        } elseif ($method === 'POST' && !$id) {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($lists->create($data));
+        } elseif ($method === 'POST' && $id && $subresource === 'media') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $lists->addMedia($id, (int)$data['media_id']);
+            echo json_encode($lists->findById($id));
         } elseif ($method === 'PUT' && $id) {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($lists->update($id, $data));
+        } elseif ($method === 'DELETE' && $id && $subresource === 'media' && $subid) {
+            $lists->removeMedia($id, $subid);
+            echo json_encode($lists->findById($id));
         } elseif ($method === 'DELETE' && $id) {
             echo json_encode(['success' => $lists->delete($id)]);
         }
