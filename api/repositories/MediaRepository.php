@@ -92,12 +92,24 @@ class MediaRepository extends BaseRepository {
             $params[] = $filters['recommender_id'];
         }
 
+        $allowedSorts = [
+            'created_at'  => 'm.created_at',
+            'title'       => 'm.title',
+            'type'        => 'm.type',
+            'status'      => 'm.status',
+            'recommender' => 'r.name',
+            'show_name'   => 'm.show_name',
+        ];
+        
+        $sortBy  = $allowedSorts[$filters['sort'] ?? ''] ?? 'm.created_at';
+        $sortDir = strtoupper($filters['order'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
+        
         $whereClause = implode(' AND ', $where);
         $query = "SELECT m.*, r.name AS recommender_name
                   FROM media m
                   LEFT JOIN recommenders r ON r.id = m.recommender_id
                   WHERE $whereClause
-                  ORDER BY m.created_at DESC";
+                  ORDER BY $sortBy $sortDir";
 
         $rows = DB::query($query, ...$params);
 
