@@ -22,9 +22,12 @@ class RecommenderRepository extends BaseRepository {
     }
 
     public function findById(int $id): ?array {
-        return DB::queryFirstRow(
+        $row = DB::queryFirstRow(
             "SELECT * FROM recommenders WHERE id = %i",
             $id
         );
+        if (!$row) return null;
+        $row = $this->castIntegers($row, ['id']);
+        return $row;
     }
 }

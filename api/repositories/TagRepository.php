@@ -41,7 +41,7 @@ class TagRepository extends BaseRepository {
     public function getMediaByTags(array $tagNames): array {
         $count = count($tagNames);
 
-        return DB::query(
+        $rows = DB::query(
             "SELECT m.*
              FROM media m
              JOIN media_tags mt ON mt.media_id = m.id
@@ -52,5 +52,10 @@ class TagRepository extends BaseRepository {
             $tagNames,
             $count
         );
+        foreach ($rows as &$row) {
+            $row = $this->castIntegers($row, ['id', 'recommender_id']);
+            $row = $this->castBooleans($row, ['is_dead', 'is_paywalled']);
+        }
+        return $rows;
     }
 }

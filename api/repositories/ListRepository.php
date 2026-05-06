@@ -32,9 +32,10 @@ class ListRepository extends BaseRepository {
             "SELECT * FROM lists WHERE share_token = %s",
             $token
         );
-
+        
         if (!$list) return null;
-
+        
+        $list = $this->castRow($list);
         $list['media'] = $this->getMediaForList($list['id']);
         return $list;
     }
@@ -95,7 +96,7 @@ class ListRepository extends BaseRepository {
     }
 
     private function getMediaForList(int $listId): array {
-        return DB::query(
+        $rows = DB::query(
             "SELECT m.*
              FROM media m
              JOIN media_lists ml ON ml.media_id = m.id
@@ -103,5 +104,10 @@ class ListRepository extends BaseRepository {
              ORDER BY m.created_at DESC",
             $listId
         );
+        foreach ($rows as &$row) {
+            $row = $this->castIntegers($row, ['id', 'recommender_id']);
+            $row = $this->castBooleans($row, ['is_dead', 'is_paywalled']);
+        }
+        return $rows;
     }
 }
