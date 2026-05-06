@@ -116,12 +116,16 @@ class MediaRepository extends BaseRepository {
     }
 
     private function getTagsForMedia(int $mediaId): array {
-        return DB::query(
+        $rows = DB::query(
             "SELECT t.id, t.name
              FROM tags t
              JOIN media_tags mt ON mt.tag_id = t.id
              WHERE mt.media_id = %i",
             $mediaId
         );
+        foreach ($rows as &$row) {
+            $row = $this->castIntegers($row, ['id']);
+        }
+        return $rows;
     }
 }
