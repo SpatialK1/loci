@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../api/auth.php';
 require_once __DIR__ . '/../api/db.php';
+require_once __DIR__ . '/../api/repositories/BaseRepository.php';
 require_once __DIR__ . '/../api/repositories/MediaRepository.php';
 require_once __DIR__ . '/../api/repositories/TagRepository.php';
 require_once __DIR__ . '/../api/repositories/RecommenderRepository.php';

@@ -1,5 +1,5 @@
 <?php
-class RecommenderRepository {
+class RecommenderRepository extends BaseRepository {
 
     public function findOrCreate(string $name): int {
         $recommender = DB::queryFirstRow(
@@ -14,7 +14,11 @@ class RecommenderRepository {
     }
 
     public function getAll(): array {
-        return DB::query("SELECT * FROM recommenders ORDER BY name ASC");
+        $rows = DB::query("SELECT * FROM recommenders ORDER BY name ASC");
+        foreach ($rows as &$row) {
+            $row = $this->castIntegers($row, ['id']);
+        }
+        return $rows;
     }
 
     public function findById(int $id): ?array {

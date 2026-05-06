@@ -1,5 +1,5 @@
 <?php
-class TagRepository {
+class TagRepository extends BaseRepository {
 
     public function findOrCreate(string $name): int {
         $tag = DB::queryFirstRow(
@@ -31,7 +31,11 @@ class TagRepository {
     }
 
     public function getAll(): array {
-        return DB::query("SELECT * FROM tags ORDER BY name ASC");
+        $rows = DB::query("SELECT * FROM tags ORDER BY name ASC");
+        foreach ($rows as &$row) {
+            $row = $this->castIntegers($row, ['id']);
+        }
+        return $rows;
     }
 
     public function getMediaByTags(array $tagNames): array {

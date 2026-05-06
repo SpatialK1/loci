@@ -1,5 +1,5 @@
 <?php
-class MediaRepository {
+class MediaRepository extends BaseRepository {
 
     public function create(array $data): array {
         DB::insert('media', [
@@ -31,7 +31,7 @@ class MediaRepository {
         );
 
         if (!$row) return null;
-
+        $row = $this->castRow($row);
         $row['tags'] = $this->getTagsForMedia($id);
         return $row;
     }
@@ -102,10 +102,17 @@ class MediaRepository {
         $rows = DB::query($query, ...$params);
 
         foreach ($rows as &$row) {
+            $row = $this->castRow($row);
             $row['tags'] = $this->getTagsForMedia($row['id']);
         }
 
         return $rows;
+    }
+
+    private function castRow(array $row): array {
+        $row = $this->castIntegers($row, ['id', 'recommender_id']);
+        $row = $this->castBooleans($row, ['is_dead', 'is_paywalled']);
+        return $row;
     }
 
     private function getTagsForMedia(int $mediaId): array {

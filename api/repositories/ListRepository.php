@@ -1,5 +1,5 @@
 <?php
-class ListRepository {
+class ListRepository extends BaseRepository {
 
     public function create(array $data): array {
         $token = bin2hex(random_bytes(32));
@@ -22,7 +22,7 @@ class ListRepository {
         );
 
         if (!$list) return null;
-
+        $list = $this->castRow($list);
         $list['media'] = $this->getMediaForList($id);
         return $list;
     }
@@ -43,6 +43,7 @@ class ListRepository {
         $lists = DB::query("SELECT * FROM lists ORDER BY created_at DESC");
 
         foreach ($lists as &$list) {
+            $list = $this->castRow($list);
             $list['media'] = $this->getMediaForList($list['id']);
         }
 
@@ -85,6 +86,12 @@ class ListRepository {
             $listId,
             $mediaId
         );
+    }
+
+    private function castRow(array $row): array {
+        $row = $this->castIntegers($row, ['id']);
+        $row = $this->castBooleans($row, ['is_public']);
+        return $row;
     }
 
     private function getMediaForList(int $listId): array {
