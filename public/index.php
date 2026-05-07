@@ -66,11 +66,21 @@ switch ($resource) {
             }
         break;
 
-    case 'recommenders':
-        if ($method === 'GET') {
-            echo json_encode($recommenders->getAll());
-        }
-        break;
+        case 'recommenders':
+            if ($method === 'GET' && $id) {
+                echo json_encode($recommenders->findById($id));
+            } elseif ($method === 'GET') {
+                echo json_encode($recommenders->getAll());
+            } elseif ($method === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                echo json_encode($recommenders->create($data['name']));
+            } elseif ($method === 'PUT' && $id) {
+                $data = json_decode(file_get_contents('php://input'), true);
+                echo json_encode($recommenders->update($id, $data['name']));
+            } elseif ($method === 'DELETE' && $id) {
+                echo json_encode(['success' => $recommenders->delete($id)]);
+            }
+            break;
 
     case 'lists':
         if ($method === 'GET' && $id) {

@@ -39,16 +39,30 @@ class TagRepository extends BaseRepository {
     }
 
     public function create(string $name): array {
-        DB::insert('tags', ['name' => $name]);
-        $id = DB::insertId();
-        return ['id' => (int) $id, 'name' => $name];
+        try {
+            DB::insert('tags', ['name' => $name]);
+            $id = DB::insertId();
+            return ['id' => (int) $id, 'name' => $name];
+        } catch (\Exception $e) {
+            if ($this->isDuplicateEntryError($e)) {
+                return ['error' => 'A tag with that name already exists'];
+            }
+            throw $e;
+        }
     }
     
-    public function update(int $id, string $name): ?array {
-        DB::update('tags', ['name' => $name], 'id = %i', $id);
-        $row = DB::queryFirstRow("SELECT * FROM tags WHERE id = %i", $id);
-        if (!$row) return null;
-        return $this->castIntegers($row, ['id']);
+    public function update(int $id, string $name): array {
+        try {
+            DB::update('tags', ['name' => $name], 'id = %i', $id);
+            $row = DB::queryFirstRow("SELECT * FROM tags WHERE id = %i", $id);
+            if (!$row) return ['error' => 'Tag not found'];
+            return $this->castIntegers($row, ['id']);
+        } catch (\Exception $e) {
+            if ($this->isDuplicateEntryError($e)) {
+                return ['error' => 'A tag with that name already exists'];
+            }
+            throw $e;
+        }
     }
     
     public function delete(int $id): bool {

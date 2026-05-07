@@ -2,23 +2,29 @@
 class MediaRepository extends BaseRepository {
 
     public function create(array $data): array {
-        DB::insert('media', [
-            'type'           => $data['type'],
-            'title'          => $data['title'],
-            'author'         => $data['author'] ?? null,
-            'url'            => $data['url'] ?? null,
-            'notes'          => $data['notes'] ?? null,
-            'recommender_id' => $data['recommender_id'] ?? null,
-            'status'         => $data['status'] ?? 'queue',
-            'is_dead'        => $data['is_dead'] ?? 0,
-            'is_paywalled'   => $data['is_paywalled'] ?? 0,
-            'isbn'           => $data['isbn'] ?? null,
-            'book_format'    => $data['book_format'] ?? null,
-            'show_name'      => $data['show_name'] ?? null,
-        ]);
-
-        $id = DB::insertId();
-        return $this->findById($id);
+        try {
+            DB::insert('media', [
+                'type'           => $data['type'],
+                'title'          => $data['title'],
+                'author'         => $data['author'] ?? null,
+                'url'            => $data['url'] ?? null,
+                'notes'          => $data['notes'] ?? null,
+                'recommender_id' => $data['recommender_id'] ?? null,
+                'status'         => $data['status'] ?? 'queue',
+                'is_dead'        => $data['is_dead'] ?? 0,
+                'is_paywalled'   => $data['is_paywalled'] ?? 0,
+                'isbn'           => $data['isbn'] ?? null,
+                'book_format'    => $data['book_format'] ?? null,
+                'show_name'      => $data['show_name'] ?? null,
+            ]);
+            $id = DB::insertId();
+            return $this->findById($id);
+        } catch (\Exception $e) {
+            if ($this->isDuplicateEntryError($e)) {
+                return ['error' => 'That URL already exists in your archive'];
+            }
+            throw $e;
+        }
     }
 
     public function findById(int $id): ?array {
@@ -36,7 +42,7 @@ class MediaRepository extends BaseRepository {
         return $row;
     }
 
-    public function update(int $id, array $data): ?array {
+    public function update(int $id, array $data): array {
         $allowed = [
             'title', 'author', 'url', 'notes', 'recommender_id',
             'status', 'consumed_at', 'is_dead', 'is_paywalled',
@@ -50,22 +56,29 @@ class MediaRepository extends BaseRepository {
             }
         }
     
-        if (empty($update)) return $this->findById($id);
+        try {
+            if (!empty($update)) {
+                DB::update('media', $update, 'id = %i', $id);
+            }
     
-        DB::update('media', $update, 'id = %i', $id);
+            if (array_key_exists('tags', $data)) {
+                $tags = new TagRepository();
+                $tags->syncTagsForMedia($id, $data['tags']);
+            }
     
-        if (array_key_exists('tags', $data)) {
-            $tags = new TagRepository();
-            $tags->syncTagsForMedia($id, $data['tags']);
+            if (array_key_exists('recommender', $data)) {
+                $recommenders = new RecommenderRepository();
+                $recommender_id = $recommenders->findOrCreate($data['recommender']);
+                DB::update('media', ['recommender_id' => $recommender_id], 'id = %i', $id);
+            }
+    
+            return $this->findById($id);
+        } catch (\Exception $e) {
+            if ($this->isDuplicateEntryError($e)) {
+                return ['error' => 'That URL already exists in your archive'];
+            }
+            throw $e;
         }
-    
-        if (array_key_exists('recommender', $data)) {
-            $recommenders = new RecommenderRepository();
-            $recommender_id = $recommenders->findOrCreate($data['recommender']);
-            DB::update('media', ['recommender_id' => $recommender_id], 'id = %i', $id);
-        }
-    
-        return $this->findById($id);
     }
     
     public function delete(int $id): bool {

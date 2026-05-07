@@ -18,4 +18,8 @@ abstract class BaseRepository {
         }
         return $row;
     }
+
+    protected function isDuplicateEntryError(\Exception $e): bool {
+        return strpos($e->getMessage(), '1062') !== false;
+    }
 }
