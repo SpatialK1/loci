@@ -41,7 +41,7 @@ class TagRepository extends BaseRepository {
     public function create(string $name): array {
         DB::insert('tags', ['name' => $name]);
         $id = DB::insertId();
-        return ['id' => $id, 'name' => $name];
+        return ['id' => (int) $id, 'name' => $name];
     }
     
     public function update(int $id, string $name): ?array {
