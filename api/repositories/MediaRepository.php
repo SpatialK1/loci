@@ -92,6 +92,11 @@ class MediaRepository extends BaseRepository {
             $params[] = $filters['recommender_id'];
         }
 
+        if (!empty($filters['tag'])) {
+            $where[] = "EXISTS (SELECT 1 FROM media_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.media_id = m.id AND t.name = %s)";
+            $params[] = $filters['tag'];
+        }
+
         $allowedSorts = [
             'created_at'  => 'm.created_at',
             'title'       => 'm.title',
