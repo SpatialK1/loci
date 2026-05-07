@@ -59,4 +59,6 @@ class RecommenderRepository extends BaseRepository {
 
     public function delete(int $id): bool {
         DB::query("DELETE FROM recommenders WHERE id = %i", $id);
-        return DB::af
+        return DB::affectedRows() > 0;
+    }
+}
