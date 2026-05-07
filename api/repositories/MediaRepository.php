@@ -104,6 +104,11 @@ class MediaRepository extends BaseRepository {
             $where[] = "m.recommender_id = %i";
             $params[] = $filters['recommender_id'];
         }
+        
+        if (!empty($filters['recommender'])) {
+            $where[] = "r.name = %s";
+            $params[] = $filters['recommender'];
+        }
 
         if (!empty($filters['tag'])) {
             $where[] = "EXISTS (SELECT 1 FROM media_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.media_id = m.id AND t.name = %s)";
