@@ -38,6 +38,24 @@ class TagRepository extends BaseRepository {
         return $rows;
     }
 
+    public function create(string $name): array {
+        DB::insert('tags', ['name' => $name]);
+        $id = DB::insertId();
+        return ['id' => $id, 'name' => $name];
+    }
+    
+    public function update(int $id, string $name): ?array {
+        DB::update('tags', ['name' => $name], 'id = %i', $id);
+        $row = DB::queryFirstRow("SELECT * FROM tags WHERE id = %i", $id);
+        if (!$row) return null;
+        return $this->castIntegers($row, ['id']);
+    }
+    
+    public function delete(int $id): bool {
+        DB::query("DELETE FROM tags WHERE id = %i", $id);
+        return DB::affectedRows() > 0;
+    }
+
     public function getMediaByTags(array $tagNames): array {
         $count = count($tagNames);
 

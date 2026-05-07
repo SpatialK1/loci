@@ -52,10 +52,18 @@ switch ($resource) {
         }
         break;
 
-    case 'tags':
-        if ($method === 'GET') {
-            echo json_encode($tags->getAll());
-        }
+        case 'tags':
+            if ($method === 'GET') {
+                echo json_encode($tags->getAll());
+            } elseif ($method === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                echo json_encode($tags->create($data['name']));
+            } elseif ($method === 'PUT' && $id) {
+                $data = json_decode(file_get_contents('php://input'), true);
+                echo json_encode($tags->update($id, $data['name']));
+            } elseif ($method === 'DELETE' && $id) {
+                echo json_encode(['success' => $tags->delete($id)]);
+            }
         break;
 
     case 'recommenders':
