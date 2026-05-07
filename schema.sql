@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS media (
     type ENUM('url', 'book', 'movie', 'podcast') NOT NULL,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NULL,
-    url TEXT,
+    url VARCHAR(2048),
     notes TEXT,
     recommender_id INT UNSIGNED,
     status ENUM('queue', 'consumed') NOT NULL DEFAULT 'queue',
