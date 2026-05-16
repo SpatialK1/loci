@@ -24,7 +24,7 @@ function require_auth(): void {
 }
 
 function auth_prompt(): void {
-    header('WWW-Authenticate: Basic realm="Pocket2"');
+    header('WWW-Authenticate: Basic realm="Loci"');
     header('HTTP/1.0 401 Unauthorized');
     echo json_encode(['error' => 'Unauthorized']);
     exit;

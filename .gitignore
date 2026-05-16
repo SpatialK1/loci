@@ -9,8 +9,7 @@ api/auth.php
 .cursor/
 
 # Project brief
-Pocket2_ProjectBrief.rtf
+Loci_ProjectBrief.rtf
 
 # Dependencies
 vendor/
-composer.lock
