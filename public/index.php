@@ -13,8 +13,6 @@ header('Content-Type: application/json');
 $path   = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $method = $_SERVER['REQUEST_METHOD'];
 
-require_auth();
-
 $segments    = explode('/', $path);
 $resource    = $segments[0] ?? '';
 $id          = isset($segments[1]) ? (int)$segments[1] : null;
@@ -23,7 +21,8 @@ $subid       = isset($segments[3]) ? (int)$segments[3] : null;
 
 // Public share token route — no auth required
 if ($resource === 'share' && !empty($segments[1])) {
-    $list = $lists->findByToken($segments[1]);
+    $lists = new ListRepository();
+    $list  = $lists->findByToken($segments[1]);
     if (!$list) {
         http_response_code(404);
         echo json_encode(['error' => 'List not found']);
@@ -33,12 +32,12 @@ if ($resource === 'share' && !empty($segments[1])) {
     exit;
 }
 
+require_auth();
+
 $media        = new MediaRepository();
 $tags         = new TagRepository();
 $recommenders = new RecommenderRepository();
 $lists        = new ListRepository();
-
-require_auth();
 
 switch ($resource) {
 
@@ -66,35 +65,35 @@ switch ($resource) {
         }
         break;
 
-        case 'tags':
-            if ($method === 'GET') {
-                echo json_encode($tags->getAll());
-            } elseif ($method === 'POST') {
-                $data = json_decode(file_get_contents('php://input'), true);
-                echo json_encode($tags->create($data['name']));
-            } elseif ($method === 'PUT' && $id) {
-                $data = json_decode(file_get_contents('php://input'), true);
-                echo json_encode($tags->update($id, $data['name']));
-            } elseif ($method === 'DELETE' && $id) {
-                echo json_encode(['success' => $tags->delete($id)]);
-            }
+    case 'tags':
+        if ($method === 'GET') {
+            echo json_encode($tags->getAll());
+        } elseif ($method === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($tags->create($data['name']));
+        } elseif ($method === 'PUT' && $id) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($tags->update($id, $data['name']));
+        } elseif ($method === 'DELETE' && $id) {
+            echo json_encode(['success' => $tags->delete($id)]);
+        }
         break;
 
-        case 'recommenders':
-            if ($method === 'GET' && $id) {
-                echo json_encode($recommenders->findById($id));
-            } elseif ($method === 'GET') {
-                echo json_encode($recommenders->getAll());
-            } elseif ($method === 'POST') {
-                $data = json_decode(file_get_contents('php://input'), true);
-                echo json_encode($recommenders->create($data['name']));
-            } elseif ($method === 'PUT' && $id) {
-                $data = json_decode(file_get_contents('php://input'), true);
-                echo json_encode($recommenders->update($id, $data['name']));
-            } elseif ($method === 'DELETE' && $id) {
-                echo json_encode(['success' => $recommenders->delete($id)]);
-            }
-            break;
+    case 'recommenders':
+        if ($method === 'GET' && $id) {
+            echo json_encode($recommenders->findById($id));
+        } elseif ($method === 'GET') {
+            echo json_encode($recommenders->getAll());
+        } elseif ($method === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($recommenders->create($data['name']));
+        } elseif ($method === 'PUT' && $id) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($recommenders->update($id, $data['name']));
+        } elseif ($method === 'DELETE' && $id) {
+            echo json_encode(['success' => $recommenders->delete($id)]);
+        }
+        break;
 
     case 'lists':
         if ($method === 'GET' && $id) {
