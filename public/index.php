@@ -21,10 +21,24 @@ $id          = isset($segments[1]) ? (int)$segments[1] : null;
 $subresource = $segments[2] ?? null;
 $subid       = isset($segments[3]) ? (int)$segments[3] : null;
 
+// Public share token route — no auth required
+if ($resource === 'share' && !empty($segments[1])) {
+    $list = $lists->findByToken($segments[1]);
+    if (!$list) {
+        http_response_code(404);
+        echo json_encode(['error' => 'List not found']);
+    } else {
+        echo json_encode($list);
+    }
+    exit;
+}
+
 $media        = new MediaRepository();
 $tags         = new TagRepository();
 $recommenders = new RecommenderRepository();
 $lists        = new ListRepository();
+
+require_auth();
 
 switch ($resource) {
 
