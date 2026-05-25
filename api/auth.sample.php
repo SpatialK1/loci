@@ -7,7 +7,17 @@ define('AUTH_USER', 'your_username');
 define('AUTH_PASS', 'your_bcrypt_hash');
 
 function require_auth(): void {
-    if (SITE_PUBLIC && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $is_public = false;
+    try {
+        $setting = DB::queryFirstRow("SELECT `value` FROM settings WHERE `key` = 'site_public'");
+        if ($setting) {
+            $is_public = $setting['value'] === 'true';
+        }
+    } catch (\Exception $e) {
+        $is_public = false;
+    }
+
+    if ($is_public && $_SERVER['REQUEST_METHOD'] === 'GET') {
         return;
     }
 

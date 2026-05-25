@@ -53,3 +53,19 @@ CREATE TABLE IF NOT EXISTS media_lists (
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE,
     FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS settings (
+    `key` VARCHAR(50) PRIMARY KEY,
+    `value` TEXT
+);
+
+INSERT INTO settings (`key`, `value`) VALUES
+    ('site_public', 'false'),
+    ('site_title', 'Loci'),
+    ('theme', 'light'),
+    ('font_size', '1.0'),
+    ('contact_url', ''),
+    ('items_per_page', '20'),
+    ('default_sort', 'created_at'),
+    ('default_sort_direction', 'DESC'),
+    ('default_status_filter', 'all');

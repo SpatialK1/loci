@@ -7,6 +7,7 @@ require_once __DIR__ . '/../api/repositories/MediaRepository.php';
 require_once __DIR__ . '/../api/repositories/TagRepository.php';
 require_once __DIR__ . '/../api/repositories/RecommenderRepository.php';
 require_once __DIR__ . '/../api/repositories/ListRepository.php';
+require_once __DIR__ . '/../api/repositories/SettingsRepository.php';
 
 header('Content-Type: application/json');
 
@@ -38,6 +39,7 @@ $media        = new MediaRepository();
 $tags         = new TagRepository();
 $recommenders = new RecommenderRepository();
 $lists        = new ListRepository();
+$settings     = new SettingsRepository();
 
 switch ($resource) {
 
@@ -115,6 +117,15 @@ switch ($resource) {
             echo json_encode($lists->findById($id));
         } elseif ($method === 'DELETE' && $id) {
             echo json_encode(['success' => $lists->delete($id)]);
+        }
+        break;
+    
+    case 'settings':
+        if ($method === 'GET') {
+            echo json_encode($settings->getAll());
+        } elseif ($method === 'PUT') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($settings->setMany($data));
         }
         break;
 
