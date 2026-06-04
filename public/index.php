@@ -16,6 +16,9 @@ require_once __DIR__ . '/../api/repositories/RecommenderRepository.php';
 require_once __DIR__ . '/../api/repositories/ListRepository.php';
 require_once __DIR__ . '/../api/repositories/SettingsRepository.php';
 
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
+
 header('Content-Type: application/json');
 
 $path   = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
