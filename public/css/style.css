@@ -1,0 +1,284 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #000;
+}
+
+header h1 {
+    font-size: 1.5rem;
+}
+
+nav a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: #000;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 1.5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #000;
+}
+
+#filters, #sort-controls, #view-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+select, input[type="text"], input[type="url"], textarea {
+    border: 1px solid #000;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: #fff;
+    color: #000;
+}
+
+button {
+    border: 1px solid #000;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* List view */
+.view-list .media-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #000;
+}
+
+.view-list .item-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.view-list .item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.view-list .item-tags {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.view-list .item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+}
+
+/* Card view */
+.view-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.view-card .media-item {
+    border: 1px solid #000;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.view-card .item-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid #000;
+}
+
+/* Shared item styles */
+.item-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid #000;
+    padding: 0 0.25rem;
+}
+
+.item-title {
+    font-weight: bold;
+}
+
+.item-url {
+    color: #000;
+    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+.tag {
+    font-size: 0.75rem;
+    border: 1px solid #000;
+    padding: 0 0.25rem;
+}
+
+.flag {
+    font-size: 0.75rem;
+    padding: 0 0.25rem;
+    border: 1px solid #000;
+}
+
+.empty {
+    padding: 2rem 0;
+    color: #666;
+}
+
+/* Modal */
+#modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+#modal-overlay.hidden {
+    display: none;
+}
+
+#modal {
+    background: #fff;
+    border: 1px solid #000;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+#modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    border: none;
+    font-size: 1.5rem;
+    background: none;
+    cursor: pointer;
+}
+
+#modal-close:hover {
+    background: none;
+    color: #666;
+}
+
+#media-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+#media-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+}
+
+#media-form input[type="text"],
+#media-form input[type="url"],
+#media-form select,
+#media-form textarea {
+    width: 100%;
+}
+
+#media-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#media-form label:has(input[type="checkbox"]) {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    nav a:first-child {
+        margin-left: 0;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    #toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .view-list .media-item {
+        grid-template-columns: 1fr;
+    }
+
+    .view-list .item-actions {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}

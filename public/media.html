@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loci</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme-light.css" id="theme-stylesheet">
+</head>
+<body>
+    <header>
+        <h1 id="site-title">Loci</h1>
+        <nav>
+            <a href="media.html">Media</a>
+            <a href="lists.html">Lists</a>
+            <a href="settings.html">Settings</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="toolbar">
+            <div id="filters">
+                <select id="filter-type">
+                    <option value="">All Types</option>
+                    <option value="url">URLs</option>
+                    <option value="book">Books</option>
+                    <option value="movie">Movies</option>
+                    <option value="podcast">Podcasts</option>
+                </select>
+
+                <select id="filter-status">
+                    <option value="">All</option>
+                    <option value="queue">Queue</option>
+                    <option value="consumed">Consumed</option>
+                </select>
+
+                <select id="filter-recommender">
+                    <option value="">All Recommenders</option>
+                </select>
+
+                <input type="text" id="filter-tag" placeholder="Filter by tag">
+            </div>
+
+            <div id="sort-controls">
+                <select id="sort-by">
+                    <option value="created_at">Date Added</option>
+                    <option value="title">Title</option>
+                    <option value="type">Type</option>
+                    <option value="status">Status</option>
+                    <option value="recommender">Recommender</option>
+                    <option value="show_name">Show Name</option>
+                </select>
+
+                <select id="sort-dir">
+                    <option value="DESC">Newest First</option>
+                    <option value="ASC">Oldest First</option>
+                </select>
+            </div>
+
+            <div id="view-controls">
+                <button id="view-list" title="List view">List</button>
+                <button id="view-card" title="Card view">Card</button>
+                <button id="add-media">+ Add</button>
+            </div>
+        </div>
+
+        <div id="media-container">
+            <div id="media-list" class="view-list"></div>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="hidden">
+        <div id="modal">
+            <button id="modal-close">×</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/media.js"></script>
+</body>
+</html>
