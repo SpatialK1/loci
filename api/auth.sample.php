@@ -6,36 +6,22 @@
 define('AUTH_USER', 'your_username');
 define('AUTH_PASS', 'your_bcrypt_hash');
 
-function require_auth(): void {
-    $is_public = false;
-    try {
-        $setting = DB::queryFirstRow("SELECT `value` FROM settings WHERE `key` = 'site_public'");
-        if ($setting) {
-            $is_public = $setting['value'] === 'true';
-        }
-    } catch (\Exception $e) {
-        $is_public = false;
-    }
-
-    if ($is_public && $_SERVER['REQUEST_METHOD'] === 'GET') {
-        return;
-    }
-
-    if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
-        auth_prompt();
-    }
-
-    if (
-        $_SERVER['PHP_AUTH_USER'] !== AUTH_USER ||
-        !password_verify($_SERVER['PHP_AUTH_PW'], AUTH_PASS)
-    ) {
-        auth_prompt();
-    }
+function verify_credentials(string $username, string $password): bool {
+    return $username === AUTH_USER && password_verify($password, AUTH_PASS);
 }
 
-function auth_prompt(): void {
-    header('WWW-Authenticate: Basic realm="Loci"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo json_encode(['error' => 'Unauthorized']);
-    exit;
+function require_auth(): void {
+    if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated']) {
+        try {
+            $setting = DB::queryFirstRow("SELECT `value` FROM settings WHERE `key` = 'site_public'");
+            if ($setting && $setting['value'] === 'true' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+                return;
+            }
+        } catch (\Exception $e) {
+            // fall through to auth required
+        }
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
 }
