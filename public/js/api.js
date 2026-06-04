@@ -16,7 +16,7 @@ const Api = (() => {
         const response = await fetch(`${BASE_URL}/${path}`, options);
 
         if (response.status === 401) {
-            window.location.reload();
+            window.location.href = '/login.html';
             return;
         }
 

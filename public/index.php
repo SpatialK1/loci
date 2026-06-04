@@ -1,4 +1,11 @@
 <?php
+
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.gc_maxlifetime', 86400);
+session_start();
+
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../api/auth.php';
 require_once __DIR__ . '/../api/db.php';
@@ -33,6 +40,27 @@ if ($resource === 'share' && !empty($segments[1])) {
     exit;
 }
 
+// Login route — no auth required
+if ($resource === 'login' && $method === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (verify_credentials($data['username'] ?? '', $data['password'] ?? '')) {
+        $_SESSION['authenticated'] = true;
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(401);
+        echo json_encode(['error' => 'Invalid username or password']);
+    }
+    exit;
+}
+
+// Logout route
+if ($resource === 'logout' && $method === 'POST') {
+    session_destroy();
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+// Check session auth
 require_auth();
 
 $media        = new MediaRepository();
@@ -119,7 +147,7 @@ switch ($resource) {
             echo json_encode(['success' => $lists->delete($id)]);
         }
         break;
-    
+
     case 'settings':
         if ($method === 'GET') {
             echo json_encode($settings->getAll());
