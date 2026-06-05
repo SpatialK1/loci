@@ -23,7 +23,7 @@ document.getElementById('login-form').addEventListener('submit', async e => {
             return;
         }
 
-        window.location.href = 'media.html';
+        window.location.href = 'media.php';
     } catch (err) {
         error.textContent = 'An error occurred. Please try again.';
         error.classList.remove('hidden');

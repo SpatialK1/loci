@@ -1,19 +1,28 @@
+<?php
+session_start();
+require_once __DIR__ . '/../config.php';
+
+if (!isset($_SESSION['authenticated']) || !$_SESSION['authenticated']) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loci</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>">
     <link rel="stylesheet" href="css/theme-light.css" id="theme-stylesheet">
 </head>
 <body>
     <header>
         <h1 id="site-title">Loci</h1>
         <nav>
-            <a href="media.html">Media</a>
-            <a href="lists.html">Lists</a>
-            <a href="settings.html">Settings</a>
+            <a href="media.php">Media</a>
+            <a href="lists.php">Lists</a>
+            <a href="settings.php">Settings</a>
         </nav>
     </header>
 
@@ -76,7 +85,7 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/media.js"></script>
+    <script src="js/api.js?v=<?= filemtime(__DIR__ . '/js/api.js') ?>"></script>
+    <script src="js/media.js?v=<?= filemtime(__DIR__ . '/js/media.js') ?>"></script>
 </body>
 </html>
