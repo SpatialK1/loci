@@ -63,7 +63,7 @@ function renderMedia(items) {
     container.innerHTML = '';
 
     if (items.length === 0) {
-        container.innerHTML = '<p class="empty">No items found.</p>';
+        container.innerHTML = `<p class="empty">${Lang.media_empty}</p>`;
         return;
     }
 
@@ -82,8 +82,8 @@ function renderItem(item) {
     const author = item.author ? `<span class="author">${item.author}</span>` : '';
     const showName = item.show_name ? `<span class="show-name">${item.show_name}</span>` : '';
     const url = item.url ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-url">${item.url}</a>` : '';
-    const deadFlag = item.is_dead ? '<span class="flag flag-dead">Dead</span>' : '';
-    const paywallFlag = item.is_paywalled ? '<span class="flag flag-paywall">Paywalled</span>' : '';
+    const deadFlag = item.is_dead ? `<span class="flag flag-dead">${Lang.field_is_dead}</span>` : '';
+    const paywallFlag = item.is_paywalled ? `<span class="flag flag-paywall">${Lang.field_is_paywalled}</span>` : '';
 
     el.innerHTML = `
         <div class="item-header">
@@ -102,10 +102,10 @@ function renderItem(item) {
         </div>
         <div class="item-tags">${tags}</div>
         <div class="item-actions">
-            <button class="btn-edit" data-id="${item.id}">Edit</button>
-            <button class="btn-delete" data-id="${item.id}">Delete</button>
+            <button class="btn-edit" data-id="${item.id}">${Lang.edit}</button>
+            <button class="btn-delete" data-id="${item.id}">${Lang.delete}</button>
             <button class="btn-status" data-id="${item.id}" data-status="${item.status}">
-                ${item.status === 'queue' ? 'Mark Consumed' : 'Mark Queue'}
+                ${item.status === 'queue' ? Lang.media_mark_consumed : Lang.media_mark_queue}
             </button>
         </div>
     `;
@@ -115,7 +115,11 @@ function renderItem(item) {
 
 function formatDate(dateStr) {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(document.documentElement.lang || 'en', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
 
 function bindEvents() {
@@ -173,7 +177,7 @@ function bindEvents() {
         }
 
         if (e.target.classList.contains('btn-delete')) {
-            if (confirm('Delete this item?')) {
+            if (confirm(Lang.media_delete_confirm)) {
                 Api.deleteMedia(id).then(loadMedia);
             }
         }
@@ -191,37 +195,37 @@ function bindEvents() {
 
 function buildMediaForm(item = null) {
     return `
-        <h2>${item ? 'Edit' : 'Add'} Media</h2>
+        <h2>${item ? Lang.media_edit_title : Lang.media_add_title}</h2>
         <form id="media-form">
-            <label>Type
+            <label>${Lang.field_type}
                 <select name="type" required>
-                    <option value="url" ${item?.type === 'url' ? 'selected' : ''}>URL</option>
-                    <option value="book" ${item?.type === 'book' ? 'selected' : ''}>Book</option>
-                    <option value="movie" ${item?.type === 'movie' ? 'selected' : ''}>Movie</option>
-                    <option value="podcast" ${item?.type === 'podcast' ? 'selected' : ''}>Podcast</option>
+                    <option value="url" ${item?.type === 'url' ? 'selected' : ''}>${Lang.type_url}</option>
+                    <option value="book" ${item?.type === 'book' ? 'selected' : ''}>${Lang.type_book}</option>
+                    <option value="movie" ${item?.type === 'movie' ? 'selected' : ''}>${Lang.type_movie}</option>
+                    <option value="podcast" ${item?.type === 'podcast' ? 'selected' : ''}>${Lang.type_podcast}</option>
                 </select>
             </label>
-            <label>Title <input type="text" name="title" value="${item?.title || ''}" required></label>
-            <label>Author <input type="text" name="author" value="${item?.author || ''}"></label>
-            <label>URL <input type="url" name="url" value="${item?.url || ''}"></label>
-            <label>Notes <textarea name="notes">${item?.notes || ''}</textarea></label>
-            <label>Recommender <input type="text" name="recommender" value="${item?.recommender_name || ''}"></label>
-            <label>Tags <input type="text" name="tags" value="${item?.tags?.map(t => t.name).join(', ') || ''}" placeholder="comma separated"></label>
-            <label>Status
+            <label>${Lang.field_title} <input type="text" name="title" value="${item?.title || ''}" required></label>
+            <label>${Lang.field_author} <input type="text" name="author" value="${item?.author || ''}"></label>
+            <label>${Lang.field_url} <input type="url" name="url" value="${item?.url || ''}"></label>
+            <label>${Lang.field_notes} <textarea name="notes">${item?.notes || ''}</textarea></label>
+            <label>${Lang.field_recommender} <input type="text" name="recommender" value="${item?.recommender_name || ''}"></label>
+            <label>${Lang.field_tags} <input type="text" name="tags" value="${item?.tags?.map(t => t.name).join(', ') || ''}" placeholder="${Lang.field_tags_hint}"></label>
+            <label>${Lang.field_status}
                 <select name="status">
-                    <option value="queue" ${item?.status === 'queue' ? 'selected' : ''}>Queue</option>
-                    <option value="consumed" ${item?.status === 'consumed' ? 'selected' : ''}>Consumed</option>
+                    <option value="queue" ${item?.status === 'queue' ? 'selected' : ''}>${Lang.status_queue}</option>
+                    <option value="consumed" ${item?.status === 'consumed' ? 'selected' : ''}>${Lang.status_consumed}</option>
                 </select>
             </label>
-            <label>ISBN <input type="text" name="isbn" value="${item?.isbn || ''}"></label>
-            <label>Show Name <input type="text" name="show_name" value="${item?.show_name || ''}"></label>
+            <label>${Lang.field_isbn} <input type="text" name="isbn" value="${item?.isbn || ''}"></label>
+            <label>${Lang.field_show_name} <input type="text" name="show_name" value="${item?.show_name || ''}"></label>
             <label>
-                <input type="checkbox" name="is_dead" ${item?.is_dead ? 'checked' : ''}> Dead Link
+                <input type="checkbox" name="is_dead" ${item?.is_dead ? 'checked' : ''}> ${Lang.field_is_dead}
             </label>
             <label>
-                <input type="checkbox" name="is_paywalled" ${item?.is_paywalled ? 'checked' : ''}> Paywalled
+                <input type="checkbox" name="is_paywalled" ${item?.is_paywalled ? 'checked' : ''}> ${Lang.field_is_paywalled}
             </label>
-            <button type="submit">${item ? 'Save' : 'Add'}</button>
+            <button type="submit">${item ? Lang.save : Lang.add}</button>
         </form>
     `;
 }

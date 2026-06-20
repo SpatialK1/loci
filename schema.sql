@@ -70,3 +70,4 @@ INSERT INTO settings (`key`, `value`) VALUES
     ('default_sort_direction', 'DESC'),
     ('default_status_filter', 'all');
     ('view_mode', 'list'),
+    ('language', 'auto'),

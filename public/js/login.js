@@ -18,14 +18,14 @@ document.getElementById('login-form').addEventListener('submit', async e => {
         const data = await response.json();
 
         if (!response.ok) {
-            error.textContent = data.error || 'Login failed';
+            error.textContent = data.error || Lang.login_error;
             error.classList.remove('hidden');
             return;
         }
 
         window.location.href = 'media.php';
     } catch (err) {
-        error.textContent = 'An error occurred. Please try again.';
+        error.textContent = Lang.login_generic_error;
         error.classList.remove('hidden');
     }
 });
