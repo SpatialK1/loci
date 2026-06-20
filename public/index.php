@@ -160,6 +160,21 @@ switch ($resource) {
         }
         break;
 
+    case 'test-duplicate':
+        if ($method === 'GET') {
+            require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
+            DuplicateDetector::init('en');
+            $existing = $media->getAll([]);
+            $incoming = [
+                'title'  => $_GET['title'] ?? '',
+                'author' => $_GET['author'] ?? '',
+                'url'    => $_GET['url'] ?? '',
+                'isbn'   => $_GET['isbn'] ?? '',
+            ];
+            echo json_encode(DuplicateDetector::findDuplicates($incoming, $existing));
+        }
+        break;    
+
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Not found']);
