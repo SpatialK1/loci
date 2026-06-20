@@ -107,4 +107,4 @@ return [
     // Lists
     'lists_title'           => 'Listes',
     'lists_empty'           => 'Aucune liste pour l\'instant.',
-    'lists_add'             => '+ Nouvelle
+    'lists_add'             => '+ Nouvelle'
