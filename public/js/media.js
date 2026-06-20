@@ -123,6 +123,12 @@ function formatDate(dateStr) {
 }
 
 function bindEvents() {
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        await fetch('/logout', { method: 'POST' });
+        window.location.href = 'login.php';
+    });
+    
     document.getElementById('filter-type').addEventListener('change', e => {
         currentFilters.type = e.target.value;
         loadMedia();

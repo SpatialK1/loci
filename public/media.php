@@ -36,6 +36,7 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
             <a href="lists.php"><?= t('nav_lists') ?></a>
             <a href="settings.php"><?= t('nav_settings') ?></a>
             <a href="import.php"><?= t('nav_import') ?></a>
+            <button id="logout-btn"><?= t('nav_logout') ?></button>
         </nav>
     </header>
 
