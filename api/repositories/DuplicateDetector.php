@@ -38,7 +38,7 @@ class DuplicateDetector {
         $lenB = mb_strlen($b);
         
         // For very short strings use a different approach
-        if ($lenA < 5 || $lenB < 5) {
+        if ($lenA < 10 || $lenB < 10) {
             // Check if one contains the other
             if (mb_strpos($b, $a) !== false || mb_strpos($a, $b) !== false) {
                 return 0.9;
