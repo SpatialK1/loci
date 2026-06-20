@@ -63,6 +63,22 @@ if ($resource === 'logout' && $method === 'POST') {
     exit;
 }
 
+// Temporary duplicate test route — remove before production
+if ($resource === 'test-duplicate' && $method === 'GET') {
+    require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
+    DuplicateDetector::init('en');
+    $media = new MediaRepository();
+    $existing = $media->getAll([]);
+    $incoming = [
+        'title'  => $_GET['title'] ?? '',
+        'author' => $_GET['author'] ?? '',
+        'url'    => $_GET['url'] ?? '',
+        'isbn'   => $_GET['isbn'] ?? '',
+    ];
+    echo json_encode(DuplicateDetector::findDuplicates($incoming, $existing));
+    exit;
+}
+
 // Check session auth
 require_auth();
 
@@ -157,21 +173,6 @@ switch ($resource) {
         } elseif ($method === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($settings->setMany($data));
-        }
-        break;
-
-    case 'test-duplicate':
-        if ($method === 'GET') {
-            require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
-            DuplicateDetector::init('en');
-            $existing = $media->getAll([]);
-            $incoming = [
-                'title'  => $_GET['title'] ?? '',
-                'author' => $_GET['author'] ?? '',
-                'url'    => $_GET['url'] ?? '',
-                'isbn'   => $_GET['isbn'] ?? '',
-            ];
-            echo json_encode(DuplicateDetector::findDuplicates($incoming, $existing));
         }
         break;    
 
