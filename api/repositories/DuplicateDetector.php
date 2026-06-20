@@ -33,9 +33,26 @@ class DuplicateDetector {
 
     public static function trigramSimilarity(string $a, string $b): float {
         if ($a === $b) return 1.0;
-        if (mb_strlen($a) < 3 || mb_strlen($b) < 3) {
+        
+        $lenA = mb_strlen($a);
+        $lenB = mb_strlen($b);
+        
+        // For very short strings use a different approach
+        if ($lenA < 5 || $lenB < 5) {
+            // Check if one contains the other
+            if (mb_strpos($b, $a) !== false || mb_strpos($a, $b) !== false) {
+                return 0.9;
+            }
+            // Use Levenshtein for short strings
+            $lev = levenshtein($a, $b);
+            $maxLen = max($lenA, $lenB);
+            return $maxLen > 0 ? 1.0 - ($lev / $maxLen) : 0.0;
+        }
+    
+        if ($lenA < 3 || $lenB < 3) {
             return $a === $b ? 1.0 : 0.0;
         }
+    
         $trigramsA = self::getTrigrams($a);
         $trigramsB = self::getTrigrams($b);
         $intersection = count(array_intersect($trigramsA, $trigramsB));
