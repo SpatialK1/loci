@@ -244,9 +244,13 @@ function openAddModal() {
         e.preventDefault();
         const data = collectFormData();
         try {
-            await Api.createMedia(data);
-            closeModal();
-            loadMedia();
+            const result = await Api.createMedia(data);
+            if (result.status === 'duplicates_found') {
+                showDuplicateReview(result.duplicates, result.incoming);
+            } else {
+                closeModal();
+                loadMedia();
+            }
         } catch (err) {
             alert(err.message);
         }
@@ -295,4 +299,76 @@ function closeModal() {
     document.getElementById('modal-content').innerHTML = '';
 }
 
+function showDuplicateReview(duplicates, incoming) {
+    const container = document.getElementById('modal-content');
+    
+    let html = `<h2>Possible Duplicates Found</h2>
+    <p>The item you're adding may already exist in your archive. Please review:</p>`;
+
+    duplicates.forEach((dup, index) => {
+        html += `
+        <div class="duplicate-review" data-index="${index}">
+            <div class="duplicate-confidence confidence-${dup.confidence}">
+                ${dup.confidence.toUpperCase()} MATCH — Score: ${Math.round(dup.score * 100)}% — ${dup.reason}
+            </div>
+            <div class="duplicate-comparison">
+                <div class="duplicate-col">
+                    <h3>Incoming</h3>
+                    <p><strong>${incoming.title || ''}</strong></p>
+                    ${incoming.author ? `<p>${incoming.author}</p>` : ''}
+                    ${incoming.url ? `<p><a href="${incoming.url}" target="_blank">${incoming.url}</a></p>` : ''}
+                </div>
+                <div class="duplicate-col">
+                    <h3>Existing</h3>
+                    <p><strong>${dup.existing.title || ''}</strong></p>
+                    ${dup.existing.author ? `<p>${dup.existing.author}</p>` : ''}
+                    ${dup.existing.url ? `<p><a href="${dup.existing.url}" target="_blank">${dup.existing.url}</a></p>` : ''}
+                </div>
+            </div>
+            <div class="duplicate-actions">
+                <button class="btn-keep-existing" data-index="${index}">Keep Existing</button>
+                <button class="btn-keep-both" data-index="${index}">Keep Both</button>
+            </div>
+        </div>`;
+    });
+
+    html += `
+    <div class="duplicate-global-actions">
+        <button id="btn-save-anyway">Save Anyway (Ignore All)</button>
+        <button id="btn-cancel-duplicate">Cancel</button>
+    </div>`;
+
+    container.innerHTML = html;
+
+    // Keep existing — discard incoming
+    container.querySelectorAll('.btn-keep-existing').forEach(btn => {
+        btn.addEventListener('click', () => {
+            closeModal();
+            loadMedia();
+        });
+    });
+
+    // Keep both — force save
+    container.querySelectorAll('.btn-keep-both').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const data = { ...incoming, force: true };
+            await Api.createMedia(data);
+            closeModal();
+            loadMedia();
+        });
+    });
+
+    // Save anyway — force save ignoring all duplicates
+    document.getElementById('btn-save-anyway').addEventListener('click', async () => {
+        const data = { ...incoming, force: true };
+        await Api.createMedia(data);
+        closeModal();
+        loadMedia();
+    });
+
+    // Cancel
+    document.getElementById('btn-cancel-duplicate').addEventListener('click', () => {
+        closeModal();
+    });
+}
 document.addEventListener('DOMContentLoaded', init);

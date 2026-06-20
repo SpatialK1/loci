@@ -81,15 +81,35 @@ switch ($resource) {
             echo json_encode($media->getAll($_GET));
         } elseif ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
-            if (!empty($data['recommender'])) {
-                $data['recommender_id'] = $recommenders->findOrCreate($data['recommender']);
+        
+        // Check for duplicates unless force flag is set
+        if (empty($data['force'])) {
+            require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
+            $settings_repo = new SettingsRepository();
+            $site_settings = $settings_repo->getAll();
+            $lang = $site_settings['language'] !== 'auto' ? $site_settings['language'] : 'en';
+            DuplicateDetector::init($lang);
+            $existing = $media->getAll([]);
+            $duplicates = DuplicateDetector::findDuplicates($data, $existing);
+            if (!empty($duplicates)) {
+                echo json_encode([
+                    'status'     => 'duplicates_found',
+                    'duplicates' => $duplicates,
+                    'incoming'   => $data,
+                ]);
+                break;
             }
-            $item = $media->create($data);
-            if (!empty($data['tags'])) {
-                $tags->syncTagsForMedia($item['id'], $data['tags']);
-                $item = $media->findById($item['id']);
-            }
-            echo json_encode($item);
+        }
+    
+        if (!empty($data['recommender'])) {
+            $data['recommender_id'] = $recommenders->findOrCreate($data['recommender']);
+        }
+        $item = $media->create($data);
+        if (!empty($data['tags'])) {
+            $tags->syncTagsForMedia($item['id'], $data['tags']);
+            $item = $media->findById($item['id']);
+        }
+        echo json_encode($item);
         } elseif ($method === 'PUT' && $id) {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($media->update($id, $data));
