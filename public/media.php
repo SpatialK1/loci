@@ -100,39 +100,8 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
     </div>
 
     <script>
-        // Pass translations to JavaScript
-        const Lang = <?= json_encode([
-            'media_empty'         => t('media_empty'),
-            'media_delete_confirm'=> t('media_delete_confirm'),
-            'media_mark_consumed' => t('media_mark_consumed'),
-            'media_mark_queue'    => t('media_mark_queue'),
-            'media_add_title'     => t('media_add_title'),
-            'media_edit_title'    => t('media_edit_title'),
-            'field_type'          => t('field_type'),
-            'field_title'         => t('field_title'),
-            'field_author'        => t('field_author'),
-            'field_url'           => t('field_url'),
-            'field_notes'         => t('field_notes'),
-            'field_recommender'   => t('field_recommender'),
-            'field_tags'          => t('field_tags'),
-            'field_tags_hint'     => t('field_tags_hint'),
-            'field_status'        => t('field_status'),
-            'field_isbn'          => t('field_isbn'),
-            'field_show_name'     => t('field_show_name'),
-            'field_is_dead'       => t('field_is_dead'),
-            'field_is_paywalled'  => t('field_is_paywalled'),
-            'type_url'            => t('type_url'),
-            'type_book'           => t('type_book'),
-            'type_movie'          => t('type_movie'),
-            'type_podcast'        => t('type_podcast'),
-            'status_queue'        => t('status_queue'),
-            'status_consumed'     => t('status_consumed'),
-            'save'                => t('save'),
-            'cancel'              => t('cancel'),
-            'edit'                => t('edit'),
-            'delete'              => t('delete'),
-        ]) ?>;
-    </script>
+    const Lang = <?= json_encode(I18n::getAllStrings()) ?>;
+</script>
 
     <script src="js/api.js?v=<?= filemtime(__DIR__ . '/js/api.js') ?>"></script>
     <script src="js/media.js?v=<?= filemtime(__DIR__ . '/js/media.js') ?>"></script>

@@ -42,10 +42,7 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
         </form>
     </main>
     <script>
-        const Lang = <?= json_encode([
-            'login_error'         => t('login_error'),
-            'login_generic_error' => t('login_generic_error'),
-        ]) ?>;
+        const Lang = <?= json_encode(I18n::getAllStrings()) ?>;
     </script>
     <script src="js/login.js?v=<?= filemtime(__DIR__ . '/js/login.js') ?>"></script>
 </body>

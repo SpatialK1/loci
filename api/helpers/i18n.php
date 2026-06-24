@@ -73,6 +73,10 @@ class I18n {
     public static function isRTL(): bool {
         return in_array(self::$activeLanguage, self::$rtlLanguages);
     }
+
+    public static function getAllStrings(): array {
+        return self::$strings;
+    }
 }
 
 // Global helper function
