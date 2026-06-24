@@ -1,10 +1,6 @@
 <?php
-// Copy this file to auth.php and fill in your values
-// Generate a bcrypt hash for your password by running:
-// php -r "echo password_hash('your_chosen_password', PASSWORD_DEFAULT);"
-
-define('AUTH_USER', 'your_username');
-define('AUTH_PASS', 'your_bcrypt_hash');
+define('AUTH_USER', 'your_actual_username');
+define('AUTH_PASS', 'your_actual_hash');
 
 function verify_credentials(string $username, string $password): bool {
     return $username === AUTH_USER && password_verify($password, AUTH_PASS);
@@ -24,4 +20,12 @@ function require_auth(): void {
         echo json_encode(['error' => 'Unauthorized']);
         exit;
     }
+}
+
+function current_user_id(): ?int {
+    return $_SESSION['user_id'] ?? null;
+}
+
+function is_admin(): bool {
+    return ($_SESSION['user_role'] ?? '') === 'admin';
 }
