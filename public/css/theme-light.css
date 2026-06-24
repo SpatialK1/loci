@@ -1,0 +1,27 @@
+/* Loci — Light Theme */
+:root {
+    --color-bg:                    #ffffff;
+    --color-bg-secondary:          #f8f8f8;
+    --color-bg-elevated:           #ffffff;
+    --color-border:                #000000;
+    --color-border-strong:         #000000;
+    --color-text:                  #000000;
+    --color-text-muted:            #555555;
+    --color-text-faint:            #888888;
+    --color-accent:                #000000;
+    --color-link:                  #0000cc;
+    --color-link-hover:            #0000ff;
+    --color-flag-dead:             #8b0000;
+    --color-flag-paywall:          #7a6000;
+    --color-tag-bg:                #ffffff;
+    --color-tag-border:            #000000;
+    --color-btn-bg:                #ffffff;
+    --color-btn-hover-bg:          #000000;
+    --color-btn-hover-text:        #ffffff;
+    --color-modal-overlay:         rgba(0, 0, 0, 0.5);
+    --color-input-bg:              #ffffff;
+    --color-input-border:          #000000;
+    --color-confidence-definitive: #d4edda;
+    --color-confidence-likely:     #fff3cd;
+    --color-confidence-possible:   #cce5ff;
+}

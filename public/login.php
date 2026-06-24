@@ -26,6 +26,7 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= t('app_name') ?> — <?= t('login_title') ?></title>
     <link rel="stylesheet" href="css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>">
+    <link rel="stylesheet" href="css/theme-<?= htmlspecialchars($siteSettings['theme'] ?? 'light') ?>.css" id="theme-stylesheet">
 </head>
 <body>
     <main id="login-page">
