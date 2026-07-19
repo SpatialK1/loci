@@ -88,7 +88,7 @@ function renderItem(item) {
     const deadFlag = item.is_dead ? `<span class="flag flag-dead">${Lang.field_is_dead}</span>` : '';
     const paywallFlag = item.is_paywalled ? `<span class="flag flag-paywall">${Lang.field_is_paywalled}</span>` : '';
     const visibilityIcon = {
-        'private': '<span class="material-icons visibility-icon" title="Private">lock</span>',
+        'private': '<span class="material-icons visibility-icon" title="Private">visibility_off</span>',
         'group':   '<span class="material-icons visibility-icon" title="Group">group</span>',
         'public':  '<span class="material-icons visibility-icon" title="Public">public</span>',
     }[item.visibility] ?? '';
