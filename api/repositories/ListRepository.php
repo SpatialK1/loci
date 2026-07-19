@@ -9,7 +9,7 @@ class ListRepository extends BaseRepository {
             'name'        => $data['name'],
             'description' => $data['description'] ?? null,
             'share_token' => $token,
-            'is_public'   => $data['is_public'] ?? 0,
+            'visibility'  => $data['visibility'] ?? 'group',
         ]);
 
         $id = DB::insertId();
@@ -22,7 +22,8 @@ class ListRepository extends BaseRepository {
              WHERE id = %i
              AND (
                  user_id = %i
-                 OR is_public = 1
+                 OR visibility = 'group'
+                 OR visibility = 'public'
              )",
             $id,
             $currentUserId ?? 0
@@ -50,13 +51,15 @@ class ListRepository extends BaseRepository {
         if ($currentUserId) {
             $lists = DB::query(
                 "SELECT * FROM lists
-                 WHERE user_id = %i OR is_public = 1
+                 WHERE user_id = %i
+                    OR visibility = 'group'
+                    OR visibility = 'public'
                  ORDER BY created_at DESC",
                 $currentUserId
             );
         } else {
             $lists = DB::query(
-                "SELECT * FROM lists WHERE is_public = 1 ORDER BY created_at DESC"
+                "SELECT * FROM lists WHERE visibility = 'public' ORDER BY created_at DESC"
             );
         }
 
@@ -69,14 +72,13 @@ class ListRepository extends BaseRepository {
     }
 
     public function update(int $id, int $userId, array $data): ?array {
-        // Verify ownership
         $existing = DB::queryFirstRow(
             "SELECT id FROM lists WHERE id = %i AND user_id = %i",
             $id, $userId
         );
         if (!$existing) return null;
 
-        $allowed = ['name', 'description', 'is_public'];
+        $allowed = ['name', 'description', 'visibility'];
 
         $update = [];
         foreach ($allowed as $field) {
@@ -101,7 +103,6 @@ class ListRepository extends BaseRepository {
     }
 
     public function addMedia(int $listId, int $mediaId, int $userId): void {
-        // Verify list ownership
         $list = DB::queryFirstRow(
             "SELECT id FROM lists WHERE id = %i AND user_id = %i",
             $listId, $userId
@@ -116,7 +117,6 @@ class ListRepository extends BaseRepository {
     }
 
     public function removeMedia(int $listId, int $mediaId, int $userId): void {
-        // Verify list ownership
         $list = DB::queryFirstRow(
             "SELECT id FROM lists WHERE id = %i AND user_id = %i",
             $listId, $userId
@@ -132,7 +132,6 @@ class ListRepository extends BaseRepository {
 
     private function castRow(array $row): array {
         $row = $this->castIntegers($row, ['id', 'user_id']);
-        $row = $this->castBooleans($row, ['is_public']);
         return $row;
     }
 
