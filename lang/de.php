@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'Warteschlange',
     'status_consumed'       => 'Konsumiert',
 
+    // Media visibility
+    'field_visibility'   => 'Sichtbarkeit',
+    'visibility_private' => 'Privat',
+    'visibility_group'   => 'Gruppe',
+    'visibility_public'  => 'Öffentlich',
+
     // Book formats
     'format_paperback'      => 'Taschenbuch',
     'format_hardcover'      => 'Hardcover',

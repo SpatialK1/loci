@@ -55,9 +55,10 @@ if ($resource === 'login' && $method === 'POST') {
 
     if (!$user || !$user['is_active'] || !password_verify($password, $user['password_hash'])) {
         if (verify_credentials($username, $password)) {
-            $_SESSION['authenticated'] = true;
-            $_SESSION['user_id']       = null;
-            $_SESSION['user_role']     = 'admin';
+            $_SESSION['authenticated']      = true;
+            $_SESSION['user_id']            = null;
+            $_SESSION['user_role']          = 'admin';
+            $_SESSION['default_visibility'] = 'group';
             echo json_encode(['success' => true]);
         } else {
             http_response_code(401);
@@ -65,10 +66,11 @@ if ($resource === 'login' && $method === 'POST') {
         }
         exit;
     }
-
-    $_SESSION['authenticated'] = true;
-    $_SESSION['user_id']       = $user['id'];
-    $_SESSION['user_role']     = $user['role'];
+    
+    $_SESSION['authenticated']      = true;
+    $_SESSION['user_id']            = $user['id'];
+    $_SESSION['user_role']          = $user['role'];
+    $_SESSION['default_visibility'] = $user['default_visibility'];
     echo json_encode(['success' => true, 'user' => $userRepo->safeView($user)]);
     exit;
 }
@@ -242,6 +244,16 @@ switch ($resource) {
         } elseif ($method === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($settings->setMany($data));
+        }
+        break;
+
+    case 'me':
+        if ($method === 'GET') {
+            $user = $users->findById($userId);
+            echo json_encode($users->safeView($user));
+        } elseif ($method === 'PUT') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($users->safeView($users->update($userId, $data)));
         }
         break;
 

@@ -79,6 +79,12 @@ return [
     'status_queue'          => '队列',
     'status_consumed'       => '已消费',
 
+    // Media visibility
+    'field_visibility'   => '可见性',
+    'visibility_private' => '私密',
+    'visibility_group'   => '群组',
+    'visibility_public'  => '公开',
+
     // Book formats
     'format_paperback'      => '平装',
     'format_hardcover'      => '精装',

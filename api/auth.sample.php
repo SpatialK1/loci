@@ -29,3 +29,7 @@ function current_user_id(): ?int {
 function is_admin(): bool {
     return ($_SESSION['user_role'] ?? '') === 'admin';
 }
+
+function current_user_default_visibility(): string {
+    return $_SESSION['default_visibility'] ?? 'group';
+}

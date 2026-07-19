@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'In coda',
     'status_consumed'       => 'Consumato',
 
+    // Media visibility
+    'field_visibility'   => 'Visibilità',
+    'visibility_private' => 'Privato',
+    'visibility_group'   => 'Gruppo',
+    'visibility_public'  => 'Pubblico',
+
     // Book formats
     'format_paperback'      => 'Brossura',
     'format_hardcover'      => 'Copertina rigida',

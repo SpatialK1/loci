@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'File d\'attente',
     'status_consumed'       => 'Consulté',
 
+    // Media visibility
+    'field_visibility'   => 'Visibilité',
+    'visibility_private' => 'Privé',
+    'visibility_group'   => 'Groupe',
+    'visibility_public'  => 'Public',
+
     // Book formats
     'format_paperback'      => 'Broché',
     'format_hardcover'      => 'Relié',

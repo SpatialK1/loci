@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'Queue',
     'status_consumed'       => 'Consumed',
 
+    // Media visibility
+    'field_visibility'   => 'Visibility',
+    'visibility_private' => 'Private',
+    'visibility_group'   => 'Group',
+    'visibility_public'  => 'Public',
+
     // Book formats
     'format_paperback'      => 'Paperback',
     'format_hardcover'      => 'Hardcover',

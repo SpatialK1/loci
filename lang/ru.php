@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'Очередь',
     'status_consumed'       => 'Просмотрено',
 
+    // Media visibility
+    'field_visibility'   => 'Видимость',
+    'visibility_private' => 'Приватный',
+    'visibility_group'   => 'Группа',
+    'visibility_public'  => 'Публичный',
+
     // Book formats
     'format_paperback'      => 'Мягкая обложка',
     'format_hardcover'      => 'Твёрдая обложка',

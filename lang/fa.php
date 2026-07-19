@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'صف',
     'status_consumed'       => 'مصرف‌شده',
 
+    // Media visibility
+    'field_visibility'   => 'دیده‌پذیری',
+    'visibility_private' => 'خصوصی',
+    'visibility_group'   => 'گروه',
+    'visibility_public'  => 'عمومی',
+
     // Book formats
     'format_paperback'      => 'جلد نرم',
     'format_hardcover'      => 'جلد سخت',

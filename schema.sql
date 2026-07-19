@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('admin', 'member') NOT NULL DEFAULT 'member',
     archive_visibility ENUM('private', 'group', 'public') NOT NULL DEFAULT 'private',
+    default_visibility ENUM('private', 'group', 'public') NOT NULL DEFAULT 'private',
     accept_recommendations TINYINT(1) NOT NULL DEFAULT 1,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     reset_token VARCHAR(64) NULL,

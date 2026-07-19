@@ -79,6 +79,12 @@ return [
     'status_queue'          => 'キュー',
     'status_consumed'       => '消費済み',
 
+    // Media visibility
+    'field_visibility'   => '公開範囲',
+    'visibility_private' => '非公開',
+    'visibility_group'   => 'グループ',
+    'visibility_public'  => '公開',
+
     // Book formats
     'format_paperback'      => 'ペーパーバック',
     'format_hardcover'      => 'ハードカバー',
