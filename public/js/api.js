@@ -63,5 +63,9 @@ const Api = (() => {
         // Settings
         getSettings: () => request('GET', 'settings'),
         updateSettings: (data) => request('PUT', 'settings', data),
+
+        // Current user
+        getMe: () => request('GET', 'me'),
+        updateMe: (data) => request('PUT', 'me', data),
     };
 })();

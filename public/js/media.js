@@ -8,9 +8,12 @@ let currentFilters = {
     order: 'DESC'
 };
 
+let currentUser = {};
+
 async function init() {
     currentSettings = await Api.getSettings();
     applySettings(currentSettings);
+    currentUser = await Api.getMe();
     await loadRecommenders();
     await loadMedia();
     bindEvents();
@@ -223,6 +226,13 @@ function buildMediaForm(item = null) {
                     <option value="consumed" ${item?.status === 'consumed' ? 'selected' : ''}>${Lang.status_consumed}</option>
                 </select>
             </label>
+            <label>${Lang.field_visibility}
+                <select name="visibility">
+                    <option value="group" ${item?.visibility === 'group' ? 'selected' : ''}>${Lang.visibility_group}</option>
+                    <option value="private" ${item?.visibility === 'private' ? 'selected' : ''}>${Lang.visibility_private}</option>
+                    <option value="public" ${item?.visibility === 'public' ? 'selected' : ''}>${Lang.visibility_public}</option>
+                </select>
+            </label>
             <label>${Lang.field_isbn} <input type="text" name="isbn" value="${item?.isbn || ''}"></label>
             <label>${Lang.field_show_name} <input type="text" name="show_name" value="${item?.show_name || ''}"></label>
             <label>
@@ -286,6 +296,7 @@ function collectFormData() {
         recommender: form.recommender.value || null,
         tags: form.tags.value ? form.tags.value.split(',').map(t => t.trim()).filter(Boolean) : [],
         status: form.status.value,
+        visibility: form.visibility.value,
         isbn: form.isbn.value || null,
         show_name: form.show_name.value || null,
         is_dead: form.is_dead.checked ? 1 : 0,
