@@ -20,7 +20,7 @@ class MediaRepository extends BaseRepository {
                 'show_name'      => $data['show_name'] ?? null,
             ]);
             $id = DB::insertId();
-            return $this->findById($id);
+            return $this->findById($id, $data['user_id'] ?? null);
         } catch (\Exception $e) {
             if ($this->isDuplicateEntryError($e)) {
                 return ['error' => 'That URL already exists in your archive'];
