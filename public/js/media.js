@@ -87,6 +87,11 @@ function renderItem(item) {
     const url = item.url ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-url">${item.url}</a>` : '';
     const deadFlag = item.is_dead ? `<span class="flag flag-dead">${Lang.field_is_dead}</span>` : '';
     const paywallFlag = item.is_paywalled ? `<span class="flag flag-paywall">${Lang.field_is_paywalled}</span>` : '';
+    const visibilityIcon = {
+        'private': '<span class="material-icons visibility-icon" title="Private">lock</span>',
+        'group':   '<span class="material-icons visibility-icon" title="Group">group</span>',
+        'public':  '<span class="material-icons visibility-icon" title="Public">public</span>',
+    }[item.visibility] ?? '';
 
     el.innerHTML = `
         <div class="item-header">
@@ -97,6 +102,7 @@ function renderItem(item) {
             <span class="item-status">${item.status}</span>
             ${deadFlag}
             ${paywallFlag}
+            ${visibilityIcon}
         </div>
         <div class="item-meta">
             ${url}

@@ -220,6 +220,13 @@ button:hover {
     color: var(--color-text);
 }
 
+/* Visibility indicator */
+.visibility-icon {
+    font-size: 0.9rem;
+    vertical-align: middle;
+    color: var(--color-text-muted);
+}
+
 .empty {
     padding: 2rem 0;
     color: var(--color-text-faint);

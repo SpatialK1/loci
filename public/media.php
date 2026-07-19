@@ -27,6 +27,7 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
     <title><?= t('app_name') ?></title>
     <link rel="stylesheet" href="css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>">
     <link rel="stylesheet" href="css/theme-<?= htmlspecialchars($siteSettings['theme'] ?? 'light') ?>.css" id="theme-stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <header>
