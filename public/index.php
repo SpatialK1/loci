@@ -54,7 +54,6 @@ if ($resource === 'login' && $method === 'POST') {
     $user     = $userRepo->findByUsername($username);
 
     if (!$user || !$user['is_active'] || !password_verify($password, $user['password_hash'])) {
-        // Fall back to single-user auth for backwards compatibility
         if (verify_credentials($username, $password)) {
             $_SESSION['authenticated'] = true;
             $_SESSION['user_id']       = null;
@@ -96,7 +95,6 @@ if ($resource === 'register' && $method === 'POST') {
         exit;
     }
 
-    // First user becomes admin
     $existingUsers = $userRepo->getAll();
     $role          = empty($existingUsers) ? 'admin' : 'member';
 
@@ -136,24 +134,26 @@ $users           = new UserRepository();
 $invitations     = new InvitationRepository();
 $recommendations = new RecommendationRepository();
 
+$userId = current_user_id();
+
 switch ($resource) {
 
     case 'media':
         if ($method === 'GET' && $id) {
-            echo json_encode($media->findById($id));
+            echo json_encode($media->findById($id, $userId));
         } elseif ($method === 'GET') {
-            echo json_encode($media->getAll($_GET));
+            echo json_encode($media->getAll($_GET, $userId));
         } elseif ($method === 'POST') {
-            $data = json_decode(file_get_contents('php://input'), true);
+            $data            = json_decode(file_get_contents('php://input'), true);
+            $data['user_id'] = $userId;
 
-            // Check for duplicates unless force flag is set
             if (empty($data['force'])) {
                 require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
                 $settings_repo = new SettingsRepository();
                 $site_settings = $settings_repo->getAll();
                 $lang          = $site_settings['language'] !== 'auto' ? $site_settings['language'] : 'en';
                 DuplicateDetector::init($lang);
-                $existing   = $media->getAll([]);
+                $existing   = $media->getAll([], $userId);
                 $duplicates = DuplicateDetector::findDuplicates($data, $existing);
                 if (!empty($duplicates)) {
                     echo json_encode([
@@ -171,20 +171,20 @@ switch ($resource) {
             $item = $media->create($data);
             if (!empty($data['tags'])) {
                 $tags->syncTagsForMedia($item['id'], $data['tags']);
-                $item = $media->findById($item['id']);
+                $item = $media->findById($item['id'], $userId);
             }
             echo json_encode($item);
         } elseif ($method === 'PUT' && $id) {
             $data = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($media->update($id, $data));
+            echo json_encode($media->update($id, $userId, $data));
         } elseif ($method === 'DELETE' && $id) {
-            echo json_encode(['success' => $media->delete($id)]);
+            echo json_encode(['success' => $media->delete($id, $userId)]);
         }
         break;
 
     case 'tags':
         if ($method === 'GET') {
-            echo json_encode($tags->getAll());
+            echo json_encode($tags->getAll($userId));
         } elseif ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($tags->create($data['name']));
@@ -214,24 +214,25 @@ switch ($resource) {
 
     case 'lists':
         if ($method === 'GET' && $id) {
-            echo json_encode($lists->findById($id));
+            echo json_encode($lists->findById($id, $userId));
         } elseif ($method === 'GET') {
-            echo json_encode($lists->getAll());
+            echo json_encode($lists->getAll($userId));
         } elseif ($method === 'POST' && !$id) {
-            $data = json_decode(file_get_contents('php://input'), true);
+            $data            = json_decode(file_get_contents('php://input'), true);
+            $data['user_id'] = $userId;
             echo json_encode($lists->create($data));
         } elseif ($method === 'POST' && $id && $subresource === 'media') {
             $data = json_decode(file_get_contents('php://input'), true);
-            $lists->addMedia($id, (int)$data['media_id']);
-            echo json_encode($lists->findById($id));
+            $lists->addMedia($id, (int)$data['media_id'], $userId);
+            echo json_encode($lists->findById($id, $userId));
         } elseif ($method === 'PUT' && $id) {
             $data = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($lists->update($id, $data));
+            echo json_encode($lists->update($id, $userId, $data));
         } elseif ($method === 'DELETE' && $id && $subresource === 'media' && $subid) {
-            $lists->removeMedia($id, $subid);
-            echo json_encode($lists->findById($id));
+            $lists->removeMedia($id, $subid, $userId);
+            echo json_encode($lists->findById($id, $userId));
         } elseif ($method === 'DELETE' && $id) {
-            echo json_encode(['success' => $lists->delete($id)]);
+            echo json_encode(['success' => $lists->delete($id, $userId)]);
         }
         break;
 
@@ -248,7 +249,7 @@ switch ($resource) {
         if ($method === 'GET') {
             echo json_encode(array_map([$users, 'safeView'], $users->getAll()));
         } elseif ($method === 'PUT' && $id) {
-            if (!is_admin() && current_user_id() !== $id) {
+            if (!is_admin() && $userId !== $id) {
                 http_response_code(403);
                 echo json_encode(['error' => 'Forbidden']);
                 break;
@@ -280,7 +281,7 @@ switch ($resource) {
                 break;
             }
             $data       = json_decode(file_get_contents('php://input'), true);
-            $invitation = $invitations->create($data['email'], current_user_id());
+            $invitation = $invitations->create($data['email'], $userId);
             $invitations->sendInvitationEmail(
                 $invitation['email'],
                 $invitation['token'],
@@ -299,11 +300,11 @@ switch ($resource) {
 
     case 'recommendations':
         if ($method === 'GET') {
-            echo json_encode($recommendations->getPendingForUser(current_user_id()));
+            echo json_encode($recommendations->getPendingForUser($userId));
         } elseif ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
             echo json_encode($recommendations->create(
-                current_user_id(),
+                $userId,
                 $data['to_user_ids'],
                 (int)$data['media_id']
             ));
@@ -312,25 +313,25 @@ switch ($resource) {
 
     case 'recommendations/accept':
         if ($method === 'POST' && $id) {
-            echo json_encode($recommendations->accept($id, current_user_id()));
+            echo json_encode($recommendations->accept($id, $userId));
         }
         break;
 
     case 'recommendations/decline':
         if ($method === 'POST' && $id) {
-            echo json_encode(['success' => $recommendations->decline($id, current_user_id())]);
+            echo json_encode(['success' => $recommendations->decline($id, $userId)]);
         }
         break;
 
     case 'recommendations/sent':
         if ($method === 'GET') {
-            echo json_encode($recommendations->getSentByUser(current_user_id()));
+            echo json_encode($recommendations->getSentByUser($userId));
         }
         break;
 
     case 'recipients':
         if ($method === 'GET') {
-            echo json_encode($recommendations->getEligibleRecipients(current_user_id()));
+            echo json_encode($recommendations->getEligibleRecipients($userId));
         }
         break;
 

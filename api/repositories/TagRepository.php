@@ -14,10 +14,8 @@ class TagRepository extends BaseRepository {
     }
 
     public function syncTagsForMedia(int $mediaId, array $tagNames): void {
-        // Remove existing tags for this media item
         DB::query("DELETE FROM media_tags WHERE media_id = %i", $mediaId);
 
-        // Add new tags
         foreach ($tagNames as $name) {
             $name = trim($name);
             if (!$name) continue;
@@ -30,8 +28,31 @@ class TagRepository extends BaseRepository {
         }
     }
 
-    public function getAll(): array {
-        $rows = DB::query("SELECT * FROM tags ORDER BY name ASC");
+    public function getAll(?int $currentUserId = null): array {
+        // Return tags that are attached to media visible to the current user
+        if ($currentUserId) {
+            $rows = DB::query(
+                "SELECT DISTINCT t.id, t.name
+                 FROM tags t
+                 JOIN media_tags mt ON mt.tag_id = t.id
+                 JOIN media m ON m.id = mt.media_id
+                 WHERE m.user_id = %i
+                    OR m.visibility = 'group'
+                    OR m.visibility = 'public'
+                 ORDER BY t.name ASC",
+                $currentUserId
+            );
+        } else {
+            // Unauthenticated — only tags on public media
+            $rows = DB::query(
+                "SELECT DISTINCT t.id, t.name
+                 FROM tags t
+                 JOIN media_tags mt ON mt.tag_id = t.id
+                 JOIN media m ON m.id = mt.media_id
+                 WHERE m.visibility = 'public'
+                 ORDER BY t.name ASC"
+            );
+        }
         foreach ($rows as &$row) {
             $row = $this->castIntegers($row, ['id']);
         }
@@ -50,7 +71,7 @@ class TagRepository extends BaseRepository {
             throw $e;
         }
     }
-    
+
     public function update(int $id, string $name): array {
         try {
             DB::update('tags', ['name' => $name], 'id = %i', $id);
@@ -64,26 +85,44 @@ class TagRepository extends BaseRepository {
             throw $e;
         }
     }
-    
+
     public function delete(int $id): bool {
         DB::query("DELETE FROM tags WHERE id = %i", $id);
         return DB::affectedRows() > 0;
     }
 
-    public function getMediaByTags(array $tagNames): array {
+    public function getMediaByTags(array $tagNames, ?int $currentUserId = null): array {
         $count = count($tagNames);
 
-        $rows = DB::query(
-            "SELECT m.*
-             FROM media m
-             JOIN media_tags mt ON mt.media_id = m.id
-             JOIN tags t ON t.id = mt.tag_id
-             WHERE t.name IN %ls
-             GROUP BY m.id
-             HAVING COUNT(DISTINCT t.id) = %i",
-            $tagNames,
-            $count
-        );
+        if ($currentUserId) {
+            $rows = DB::query(
+                "SELECT m.*
+                 FROM media m
+                 JOIN media_tags mt ON mt.media_id = m.id
+                 JOIN tags t ON t.id = mt.tag_id
+                 WHERE t.name IN %ls
+                 AND (m.user_id = %i OR m.visibility = 'group' OR m.visibility = 'public')
+                 GROUP BY m.id
+                 HAVING COUNT(DISTINCT t.id) = %i",
+                $tagNames,
+                $currentUserId,
+                $count
+            );
+        } else {
+            $rows = DB::query(
+                "SELECT m.*
+                 FROM media m
+                 JOIN media_tags mt ON mt.media_id = m.id
+                 JOIN tags t ON t.id = mt.tag_id
+                 WHERE t.name IN %ls
+                 AND m.visibility = 'public'
+                 GROUP BY m.id
+                 HAVING COUNT(DISTINCT t.id) = %i",
+                $tagNames,
+                $count
+            );
+        }
+
         foreach ($rows as &$row) {
             $row = $this->castIntegers($row, ['id', 'recommender_id']);
             $row = $this->castBooleans($row, ['is_dead', 'is_paywalled']);
