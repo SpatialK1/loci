@@ -54,7 +54,8 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
 
                 <select id="filter-status">
                     <option value=""><?= t('filter_all_status') ?></option>
-                    <option value="queue"><?= t('status_queue') ?></option>
+                    <option value="find"><?= t('status_find') ?></option>
+                    <option value="acquired"><?= t('status_acquired') ?></option>
                     <option value="consumed"><?= t('status_consumed') ?></option>
                 </select>
 
