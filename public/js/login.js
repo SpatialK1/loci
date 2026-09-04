@@ -23,7 +23,7 @@ document.getElementById('login-form').addEventListener('submit', async e => {
             return;
         }
 
-        window.location.href = 'media.php';
+        window.location.href = typeof redirectAfterLogin !== 'undefined' ? redirectAfterLogin : 'media.php';
     } catch (err) {
         error.textContent = Lang.login_generic_error;
         error.classList.remove('hidden');

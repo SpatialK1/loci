@@ -45,6 +45,9 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
     <script>
         const Lang = <?= json_encode(I18n::getAllStrings()) ?>;
     </script>
+    <script>
+        const redirectAfterLogin = '<?= htmlspecialchars($_GET['redirect'] ?? 'media.php') ?>';
+    </script>
     <script src="js/login.js?v=<?= filemtime(__DIR__ . '/js/login.js') ?>"></script>
 </body>
 </html>
