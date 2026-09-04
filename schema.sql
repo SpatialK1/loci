@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS recommenders (
 CREATE TABLE IF NOT EXISTS media (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NULL,
+    source_media_id INT UNSIGNED NULL,
+    canonical_media_id INT UNSIGNED NULL,
     type ENUM('url', 'book', 'movie', 'podcast') NOT NULL,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NULL,
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS media (
     UNIQUE INDEX unique_url (url(768)),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (recommender_id) REFERENCES recommenders(id) ON DELETE SET NULL,
-    FOREIGN KEY (recommended_by_user_id) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (recommended_by_user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (source_media_id) REFERENCES media(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS tags (

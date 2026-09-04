@@ -5,13 +5,14 @@ class MediaRepository extends BaseRepository {
         try {
             DB::insert('media', [
                 'user_id'        => $data['user_id'] ?? null,
+                'source_media_id'    => $data['source_media_id'] ?? null,
                 'type'           => $data['type'],
                 'title'          => $data['title'],
                 'author'         => $data['author'] ?? null,
                 'url'            => $data['url'] ?? null,
                 'notes'          => $data['notes'] ?? null,
                 'recommender_id' => $data['recommender_id'] ?? null,
-                'status'         => $data['status'] ?? 'queue',
+                'status'         => $data['status'] ?? 'find',
                 'is_dead'        => $data['is_dead'] ?? 0,
                 'is_paywalled'   => $data['is_paywalled'] ?? 0,
                 'visibility'     => $data['visibility'] ?? 'group',
@@ -20,6 +21,12 @@ class MediaRepository extends BaseRepository {
                 'show_name'      => $data['show_name'] ?? null,
             ]);
             $id = DB::insertId();
+
+            // Set canonical_media_id:
+            // If this is a copy, inherit from source; otherwise set to own id
+            $canonicalId = $data['canonical_media_id'] ?? $id;
+            DB::update('media', ['canonical_media_id' => $canonicalId], 'id = %i', $id);
+
             return $this->findById($id, $data['user_id'] ?? null);
         } catch (\Exception $e) {
             if ($this->isDuplicateEntryError($e)) {
@@ -64,8 +71,37 @@ class MediaRepository extends BaseRepository {
         return $row;
     }
 
+    public function findByCanonicalId(int $canonicalId, ?int $currentUserId = null): array {
+        if ($currentUserId) {
+            $rows = DB::query(
+                "SELECT m.*, r.name AS recommender_name
+                 FROM media m
+                 LEFT JOIN recommenders r ON r.id = m.recommender_id
+                 WHERE m.canonical_media_id = %i
+                 AND (m.user_id = %i OR m.visibility = 'group' OR m.visibility = 'public')
+                 ORDER BY m.created_at ASC",
+                $canonicalId,
+                $currentUserId
+            );
+        } else {
+            $rows = DB::query(
+                "SELECT m.*, r.name AS recommender_name
+                 FROM media m
+                 LEFT JOIN recommenders r ON r.id = m.recommender_id
+                 WHERE m.canonical_media_id = %i
+                 AND m.visibility = 'public'
+                 ORDER BY m.created_at ASC",
+                $canonicalId
+            );
+        }
+        foreach ($rows as &$row) {
+            $row = $this->castRow($row);
+            $row['tags'] = $this->getTagsForMedia($row['id']);
+        }
+        return $rows;
+    }
+
     public function update(int $id, int $userId, array $data): array {
-        // Verify ownership
         $existing = DB::queryFirstRow(
             "SELECT id FROM media WHERE id = %i AND user_id = %i",
             $id, $userId
@@ -124,12 +160,10 @@ class MediaRepository extends BaseRepository {
         $where  = [];
         $params = [];
 
-        // Visibility scoping — own entries plus group/public entries from others
         if ($currentUserId) {
             $where[]  = "(m.user_id = %i OR m.visibility = 'group' OR m.visibility = 'public')";
             $params[] = $currentUserId;
         } else {
-            // Unauthenticated — only public entries
             $where[] = "m.visibility = 'public'";
         }
 
@@ -158,7 +192,6 @@ class MediaRepository extends BaseRepository {
             $params[] = $filters['tag'];
         }
 
-        // Filter to only own entries
         if (!empty($filters['mine']) && $currentUserId) {
             $where[]  = "m.user_id = %i";
             $params[] = $currentUserId;
@@ -194,7 +227,7 @@ class MediaRepository extends BaseRepository {
     }
 
     private function castRow(array $row): array {
-        $row = $this->castIntegers($row, ['id', 'recommender_id', 'user_id']);
+        $row = $this->castIntegers($row, ['id', 'recommender_id', 'user_id', 'source_media_id', 'canonical_media_id']);
         $row = $this->castBooleans($row, ['is_dead', 'is_paywalled']);
         return $row;
     }
