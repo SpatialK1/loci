@@ -4,7 +4,6 @@ class RecommendationRepository extends BaseRepository {
     public function create(int $fromUserId, array $toUserIds, int $mediaId): array {
         $created = [];
         foreach ($toUserIds as $toUserId) {
-            // Skip if recommendation already exists and is pending
             $existing = DB::queryFirstRow(
                 "SELECT id FROM recommendations
                  WHERE from_user_id = %i
@@ -93,16 +92,21 @@ class RecommendationRepository extends BaseRepository {
         $media = DB::queryFirstRow("SELECT * FROM media WHERE id = %i", $rec['media_id']);
         if (!$media) return null;
 
+        // Determine canonical_media_id — inherit from source, never create a new chain
+        $canonicalId = $media['canonical_media_id'] ?? $media['id'];
+
         // Create a copy in the receiving user's archive
         DB::insert('media', [
             'user_id'                => $userId,
+            'source_media_id'        => $media['id'],
+            'canonical_media_id'     => $canonicalId,
             'type'                   => $media['type'],
             'title'                  => $media['title'],
             'author'                 => $media['author'],
             'url'                    => $media['url'],
             'notes'                  => $media['notes'],
             'recommender_id'         => $media['recommender_id'],
-            'status'                 => 'queue',
+            'status'                 => 'find',
             'is_dead'                => 0,
             'is_paywalled'           => 0,
             'visibility'             => 'private',
@@ -134,9 +138,8 @@ class RecommendationRepository extends BaseRepository {
     }
 
     public function getEligibleRecipients(int $fromUserId): array {
-        // Returns all active users except the sender who accept recommendations
         $rows = DB::query(
-            "SELECT id, username, accept_recommendations
+            "SELECT id, username
              FROM users
              WHERE id != %i AND is_active = 1
              ORDER BY username ASC",
