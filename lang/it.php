@@ -76,8 +76,9 @@ return [
     'type_podcast'          => 'Podcast',
 
     // Media status
-    'status_queue'          => 'In coda',
-    'status_consumed'       => 'Consumato',
+    'status_find'     => 'Da trovare',
+    'status_acquired' => 'Acquisito',
+    'status_consumed' => 'Consumato',
 
     // Media visibility
     'field_visibility'   => 'Visibilità',

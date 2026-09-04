@@ -114,7 +114,7 @@ function renderItem(item) {
             <button class="btn-edit" data-id="${item.id}">${Lang.edit}</button>
             <button class="btn-delete" data-id="${item.id}">${Lang.delete}</button>
             <button class="btn-status" data-id="${item.id}" data-status="${item.status}">
-                ${item.status === 'queue' ? Lang.media_mark_consumed : Lang.media_mark_queue}
+                ${item.status === 'find' ? Lang.status_acquired : item.status === 'acquired' ? Lang.status_consumed : Lang.status_find}
             </button>
         </div>
     `;
@@ -198,7 +198,8 @@ function bindEvents() {
         }
 
         if (e.target.classList.contains('btn-status')) {
-            const newStatus = e.target.dataset.status === 'queue' ? 'consumed' : 'queue';
+            const current = e.target.dataset.status;
+            const newStatus = current === 'find' ? 'acquired' : current === 'acquired' ? 'consumed' : 'find';
             const update = { status: newStatus };
             if (newStatus === 'consumed') {
                 update.consumed_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -208,7 +209,7 @@ function bindEvents() {
     });
 }
 
-function buildMediaForm(item = null) {
+function buildMediaForm(item = null, defaultStatus = 'find') {
     return `
         <h2>${item ? Lang.media_edit_title : Lang.media_add_title}</h2>
         <form id="media-form">
@@ -228,8 +229,9 @@ function buildMediaForm(item = null) {
             <label>${Lang.field_tags} <input type="text" name="tags" value="${item?.tags?.map(t => t.name).join(', ') || ''}" placeholder="${Lang.field_tags_hint}"></label>
             <label>${Lang.field_status}
                 <select name="status">
-                    <option value="queue" ${item?.status === 'queue' ? 'selected' : ''}>${Lang.status_queue}</option>
-                    <option value="consumed" ${item?.status === 'consumed' ? 'selected' : ''}>${Lang.status_consumed}</option>
+                    <option value="find" ${(item?.status ?? defaultStatus) === 'find' ? 'selected' : ''}>${Lang.status_find}</option>
+                    <option value="acquired" ${(item?.status ?? defaultStatus) === 'acquired' ? 'selected' : ''}>${Lang.status_acquired}</option>
+                    <option value="consumed" ${(item?.status ?? defaultStatus) === 'consumed' ? 'selected' : ''}>${Lang.status_consumed}</option>
                 </select>
             </label>
             <label>${Lang.field_visibility}
@@ -256,6 +258,13 @@ function openAddModal() {
     document.getElementById('modal-content').innerHTML = buildMediaForm();
     document.getElementById('modal-overlay').classList.remove('hidden');
 
+    // Set default status based on type selection
+    const typeSelect = document.getElementById('media-form').querySelector('[name="type"]');
+    typeSelect.addEventListener('change', () => {
+        const statusSelect = document.getElementById('media-form').querySelector('[name="status"]');
+        statusSelect.value = typeSelect.value === 'url' ? 'acquired' : 'find';
+    });
+    
     document.getElementById('media-form').addEventListener('submit', async e => {
         e.preventDefault();
         const data = collectFormData();

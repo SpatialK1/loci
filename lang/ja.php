@@ -76,8 +76,9 @@ return [
     'type_podcast'          => 'ポッドキャスト',
 
     // Media status
-    'status_queue'          => 'キュー',
-    'status_consumed'       => '消費済み',
+    'status_find'     => '探す',
+    'status_acquired' => '取得済み',
+    'status_consumed' => '消費済み',
 
     // Media visibility
     'field_visibility'   => '公開範囲',

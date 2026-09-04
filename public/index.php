@@ -149,6 +149,10 @@ switch ($resource) {
             $data            = json_decode(file_get_contents('php://input'), true);
             $data['user_id'] = $userId;
 
+            if (empty($data['status']) && isset($data['type']) && $data['type'] === 'url') {
+                $data['status'] = 'acquired';
+            }
+
             if (empty($data['force'])) {
                 require_once __DIR__ . '/../api/repositories/DuplicateDetector.php';
                 $settings_repo = new SettingsRepository();
@@ -222,6 +226,10 @@ switch ($resource) {
         } elseif ($method === 'POST' && !$id) {
             $data            = json_decode(file_get_contents('php://input'), true);
             $data['user_id'] = $userId;
+
+            if (empty($data['status']) && isset($data['type']) && $data['type'] === 'url') {
+                $data['status'] = 'acquired';
+            }
             echo json_encode($lists->create($data));
         } elseif ($method === 'POST' && $id && $subresource === 'media') {
             $data = json_decode(file_get_contents('php://input'), true);

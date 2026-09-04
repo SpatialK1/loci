@@ -76,8 +76,9 @@ return [
     'type_podcast'          => '播客',
 
     // Media status
-    'status_queue'          => '队列',
-    'status_consumed'       => '已消费',
+    'status_find'     => '待获取',
+    'status_acquired' => '已获取',
+    'status_consumed' => '已消费',
 
     // Media visibility
     'field_visibility'   => '可见性',

@@ -74,10 +74,11 @@ return [
     'type_book'             => 'Книга',
     'type_movie'            => 'Фильм',
     'type_podcast'          => 'Подкаст',
-
+    
     // Media status
-    'status_queue'          => 'Очередь',
-    'status_consumed'       => 'Просмотрено',
+    'status_find'     => 'Найти',
+    'status_acquired' => 'Получено',
+    'status_consumed' => 'Просмотрено',
 
     // Media visibility
     'field_visibility'   => 'Видимость',

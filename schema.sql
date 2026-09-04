@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS media (
     url VARCHAR(2048),
     notes TEXT,
     recommender_id INT UNSIGNED,
-    status ENUM('queue', 'consumed') NOT NULL DEFAULT 'queue',
+    status ENUM('find', 'acquired', 'consumed') NOT NULL DEFAULT 'find',
     consumed_at DATETIME,
     is_dead TINYINT(1) NOT NULL DEFAULT 0,
     is_paywalled TINYINT(1) NOT NULL DEFAULT 0,

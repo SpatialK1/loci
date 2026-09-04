@@ -76,8 +76,9 @@ return [
     'type_podcast'          => 'پادکست',
 
     // Media status
-    'status_queue'          => 'صف',
-    'status_consumed'       => 'مصرف‌شده',
+    'status_find'     => 'پیدا کردن',
+    'status_acquired' => 'تهیه‌شده',
+    'status_consumed' => 'مصرف‌شده',
 
     // Media visibility
     'field_visibility'   => 'دیده‌پذیری',

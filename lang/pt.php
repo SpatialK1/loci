@@ -76,8 +76,9 @@ return [
     'type_podcast'          => 'Podcast',
 
     // Media status
-    'status_queue'          => 'Fila',
-    'status_consumed'       => 'Consumido',
+    'status_find'     => 'Encontrar',
+    'status_acquired' => 'Adquirido',
+    'status_consumed' => 'Consumido',
 
     // Media visibility
     'field_visibility'   => 'Visibilidade',
