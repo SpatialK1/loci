@@ -96,7 +96,8 @@ return [
     'filter_all_types'      => '所有类型',
     'filter_all_status'     => '全部',
     'filter_all_recommenders' => '所有推荐人',
-    'filter_by_tag'         => '按标签筛选',
+    'filter_by_tag'         => '按标签筛选',    
+    'clear_filters'         => '清除过滤器',
 
     // Sort
     'sort_date_added'       => '添加日期',

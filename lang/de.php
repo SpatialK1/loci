@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'Alle',
     'filter_all_recommenders' => 'Alle Empfehler',
     'filter_by_tag'         => 'Nach Schlagwort filtern',
+    'clear_filters'         => 'Filter zurücksetzen',
 
     // Sort
     'sort_date_added'       => 'Hinzugefügt am',

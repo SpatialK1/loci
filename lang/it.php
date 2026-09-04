@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'Tutti',
     'filter_all_recommenders' => 'Tutti i consiglieri',
     'filter_by_tag'         => 'Filtra per etichetta',
+    'clear_filters'         => 'Resetta filtri',
 
     // Sort
     'sort_date_added'       => 'Data di aggiunta',

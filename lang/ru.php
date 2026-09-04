@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'Все',
     'filter_all_recommenders' => 'Все рекомендатели',
     'filter_by_tag'         => 'Фильтр по тегу',
+    'clear_filters'         => 'Очистить фильтры',
 
     // Sort
     'sort_date_added'       => 'Дата добавления',

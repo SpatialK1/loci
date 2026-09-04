@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'Tous',
     'filter_all_recommenders' => 'Tous les recommandeurs',
     'filter_by_tag'         => 'Filtrer par étiquette',
+    'clear_filters'         => 'Effacer les filtres',
 
     // Sort
     'sort_date_added'       => 'Date d\'ajout',

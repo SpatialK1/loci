@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'すべて',
     'filter_all_recommenders' => 'すべての推薦者',
     'filter_by_tag'         => 'タグで絞り込む',
+    'clear_filters'         => 'フィルターをクリア',
 
     // Sort
     'sort_date_added'       => '追加日',

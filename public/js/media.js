@@ -212,6 +212,20 @@ function bindEvents() {
             Api.updateMedia(id, update).then(loadMedia);
         }
     });
+
+    document.getElementById('clear-filters').addEventListener('click', () => {
+        currentFilters.type        = '';
+        currentFilters.status      = '';
+        currentFilters.recommender = '';
+        currentFilters.tag         = '';
+    
+        document.getElementById('filter-type').value        = '';
+        document.getElementById('filter-status').value      = '';
+        document.getElementById('filter-recommender').value = '';
+        document.getElementById('filter-tag').value         = '';
+    
+        loadMedia();
+    });
 }
 
 function buildMediaForm(item = null, defaultStatus = 'find') {

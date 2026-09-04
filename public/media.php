@@ -85,6 +85,7 @@ $dir = I18n::isRTL() ? 'rtl' : 'ltr';
             <div id="view-controls">
                 <button id="view-list"><?= t('view_list') ?></button>
                 <button id="view-card"><?= t('view_card') ?></button>
+                <button id="clear-filters"><?= t('clear_filters') ?></button>
                 <button id="add-media"><?= t('media_add') ?></button>
             </div>
         </div>

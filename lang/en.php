@@ -97,6 +97,7 @@ return [
     'filter_all_status'     => 'All',
     'filter_all_recommenders' => 'All Recommenders',
     'filter_by_tag'         => 'Filter by tag',
+    'clear_filters'         => 'Clear Filters',
 
     // Sort
     'sort_date_added'       => 'Date Added',
