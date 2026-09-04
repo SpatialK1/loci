@@ -31,6 +31,7 @@ return [
     'nav_settings'          => '設定',
     'nav_import'            => 'インポート',
     'nav_logout'            => 'ログアウト',
+    'recommend'             => '推薦',
 
     // Auth
     'login_title'           => 'ログイン',

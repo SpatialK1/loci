@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Настройки',
     'nav_import'            => 'Импорт',
     'nav_logout'            => 'Выйти',
+    'recommend'             => 'Рекомендовать',
 
     // Auth
     'login_title'           => 'Вход',

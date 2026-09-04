@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Paramètres',
     'nav_import'            => 'Importer',
     'nav_logout'            => 'Déconnexion',
+    'recommend'             => 'Recommander',
 
     // Auth
     'login_title'           => 'Connexion',

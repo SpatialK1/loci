@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'تنظیمات',
     'nav_import'            => 'وارد کردن',
     'nav_logout'            => 'خروج',
+    'recommend'             => 'پیشنهاد',
 
     // Auth
     'login_title'           => 'ورود',

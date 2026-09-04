@@ -114,7 +114,7 @@ function renderItem(item) {
             <button class="btn-edit" data-id="${item.id}">${Lang.edit}</button>
             <button class="btn-delete" data-id="${item.id}">${Lang.delete}</button>
             <button class="btn-status" data-id="${item.id}" data-status="${item.status}">
-                ${item.status === 'find' ? Lang.status_acquired : item.status === 'acquired' ? Lang.status_consumed : Lang.status_find}
+                ${item.status === 'find' ? Lang.status_acquired : item.status === 'acquired' ? Lang.status_consumed : Lang.recommend_next}
             </button>
         </div>
     `;
@@ -199,7 +199,12 @@ function bindEvents() {
 
         if (e.target.classList.contains('btn-status')) {
             const current = e.target.dataset.status;
-            const newStatus = current === 'find' ? 'acquired' : current === 'acquired' ? 'consumed' : 'find';
+            if (current === 'consumed') {
+                // TODO: open recommendation flow
+                alert('Recommendation flow coming soon');
+                return;
+            }
+            const newStatus = current === 'find' ? 'acquired' : 'consumed';
             const update = { status: newStatus };
             if (newStatus === 'consumed') {
                 update.consumed_at = new Date().toISOString().slice(0, 19).replace('T', ' ');

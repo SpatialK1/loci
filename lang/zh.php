@@ -31,6 +31,7 @@ return [
     'nav_settings'          => '设置',
     'nav_import'            => '导入',
     'nav_logout'            => '退出登录',
+    'recommend'             => '推荐',
 
     // Auth
     'login_title'           => '登录',

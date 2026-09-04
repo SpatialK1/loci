@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Impostazioni',
     'nav_import'            => 'Importa',
     'nav_logout'            => 'Esci',
+    'recommend'             => 'Consiglia',
 
     // Auth
     'login_title'           => 'Accedi',

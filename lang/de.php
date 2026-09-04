@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Einstellungen',
     'nav_import'            => 'Importieren',
     'nav_logout'            => 'Abmelden',
+    'recommend'             => 'Empfehlen',
 
     // Auth
     'login_title'           => 'Anmelden',

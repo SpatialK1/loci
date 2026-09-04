@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Definições',
     'nav_import'            => 'Importar',
     'nav_logout'            => 'Terminar sessão',
+    'recommend'             => 'Recomendar',
 
     // Auth
     'login_title'           => 'Iniciar sessão',

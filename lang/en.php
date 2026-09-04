@@ -31,6 +31,7 @@ return [
     'nav_settings'          => 'Settings',
     'nav_import'            => 'Import',
     'nav_logout'            => 'Log Out',
+    'recommend'             => 'Recommend',
 
     // Auth
     'login_title'           => 'Log In',
