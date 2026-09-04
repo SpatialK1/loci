@@ -114,7 +114,7 @@ function renderItem(item) {
             <button class="btn-edit" data-id="${item.id}">${Lang.edit}</button>
             <button class="btn-delete" data-id="${item.id}">${Lang.delete}</button>
             <button class="btn-status" data-id="${item.id}" data-status="${item.status}">
-                ${item.status === 'find' ? Lang.status_acquired : item.status === 'acquired' ? Lang.status_consumed : Lang.recommend_next}
+                ${item.status === 'find' ? Lang.status_acquired : item.status === 'acquired' ? Lang.status_consumed : Lang.recommend}
             </button>
         </div>
     `;
