@@ -97,7 +97,7 @@ class MediaRepository extends BaseRepository {
                 $tags->syncTagsForMedia($id, $data['tags']);
             }
 
-            if (array_key_exists('recommender', $data)) {
+            if (array_key_exists('recommender', $data) && !empty($data['recommender'])) {
                 $recommenders = new RecommenderRepository();
                 $recommender_id = $recommenders->findOrCreate($data['recommender']);
                 DB::update('media', ['recommender_id' => $recommender_id], 'id = %i', $id);
